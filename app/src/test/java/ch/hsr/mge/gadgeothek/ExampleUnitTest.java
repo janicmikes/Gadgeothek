@@ -1,4 +1,4 @@
-package ch.hsr.mge.gadeothek;
+package ch.hsr.mge.gadgeothek;
 
 import org.junit.Test;
 

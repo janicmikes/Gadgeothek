@@ -49,20 +49,20 @@ class Request<T> extends AsyncTask<Void, Void, Pair<String, T>> {
                     request = c.preparePost(url);
 
                     for (Map.Entry<String, String> entry : parameterList.entrySet()) {
-                        request.addParameter(entry.getKey(), entry.getValue());
+                        request.addFormParam(entry.getKey(), entry.getValue());
                     }
                     break;
                 case GET:
                     request = c.prepareGet(url);
                     for (Map.Entry<String, String> entry : parameterList.entrySet()) {
-                        request.addQueryParameter(entry.getKey(), entry.getValue());
-                        request.addParameter(entry.getKey(), entry.getValue());
+                        request.addQueryParam(entry.getKey(), entry.getValue());
+                        request.addFormParam(entry.getKey(), entry.getValue());
                     }
                     break;
                 case DELETE:
                     request = c.prepareDelete(url);
                     for (Map.Entry<String, String> entry : parameterList.entrySet()) {
-                        request.addParameter(entry.getKey(), entry.getValue());
+                        request.addFormParam(entry.getKey(), entry.getValue());
                     }
                     break;
             }

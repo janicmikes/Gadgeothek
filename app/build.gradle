@@ -4,7 +4,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
     defaultConfig {
-        applicationId "ch.hsr.mge.gadeothek"
+        applicationId "ch.hsr.mge.gadgeothek"
         minSdkVersion 19
         targetSdkVersion 24
         versionCode 1
@@ -28,7 +28,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.ning:async-http-client:1.8.7'
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.ning:async-http-client:1.9.31'
+    compile 'org.slf4j:slf4j-api:1.7.12'
+    compile 'org.slf4j:slf4j-simple:1.7.12'
+    compile 'com.android.support:design:24.2.1'
     testCompile 'junit:junit:4.12'
 }
