@@ -5,6 +5,8 @@ android:
     - platform-tools
     - build-tools-24.0.2
     - android-24
+  licenses:
+    - 'android-sdk-license-.+'
 script:
    - ./gradlew build
 jdk:
