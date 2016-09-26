@@ -1,16 +1,29 @@
 language: android
+jdk: oraclejdk8
+sudo: false
+
 android:
   components:
     - tools
     - platform-tools
     - build-tools-24.0.2
+    - android-22
     - android-24
+    - sys-img-armeabi-v7a-android-22
+    - extra-android-m2repository
   licenses:
     - 'android-sdk-license-.+'
+
+before_script:
+  # Create and start emulator
+  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
+
 script:
-   - ./gradlew build
-jdk:
-  - oraclejdk8
+   - ./gradlew connectedAndroidTest
+
 notifications:
   slack:
     secure: UuA+NbOEQ95eJuC2NSFREjWHLLgFyNQ1y0bzEr899ctFCHJrBz/sheFheAGnWFkhXQTkes1IYreWyADppJJE2sWCuGSDqGRURvkDssdPGJRZkxuoZ1bXWn1Fdz3Vc2Ea0RRWqE/X/dQ5ePsEI8WdNE0+TxjTIi5VljY1wSfbf66s/UdfC2xKvpUgAqneCqV1W6BqqkHBDA5Gv0Gr2ZYy6kI0Fw6BqUu/BvMBK0/+wY4ABw48LXdq0KQ7UqdaUqqEp2FAbiPeKfZyCudEFmMEcbd4b08UWFN70wDZJvVIyqabg2nGe5C7J3JZTrgH65y2tB2n3iFMzbqviM9V7cbflxDS2w5KM7i2QEk3EnNjE1ZmZ4Vb/h8s9R+CCDg+EnGZs/RPdn/9dky0fdqvPEOF/OBW9CCc1cAJRsSKQY3lmuUcjeO223I2W0mOJlxu/wGLzLWoIQ6WhbOIStjkrlPWeZSE0s6BLL5y9cW1pVthiBWuev8GDIB/ZCpwl9X6JUzxivfmfa0MHTejRZ4HvC8dB++0NdTW27+rvqW3xZJ/V7aNpBEyVNtrQoAh26DyeBYyQdeSKMmkeQJJfrZ9btWpHTMYhEylgm5x8FOjWoH94P690Lt0ipbRxSbF3TDIJez6Wp+KVAZA2Tv+Rx1sKgrEumLoKFqH0Efrx0/DY3jotls=
