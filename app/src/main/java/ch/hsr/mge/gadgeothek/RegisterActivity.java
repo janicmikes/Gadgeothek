@@ -3,7 +3,6 @@ package ch.hsr.mge.gadgeothek;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -14,6 +13,7 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -41,67 +41,53 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class RegisterActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-    private static final String SERVER_ADDRESS = "http://10.0.2.2:8080/public";
 
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private EditText mNameView;
+    private EditText mStudentnumberView;
     private View mProgressView;
-    private View mLoginFormView;
+    private View mRegisterFormView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
-        //TODO: get server address from settings
-        Log.d("Gadgeothek", "Setting Server Address to: " + SERVER_ADDRESS);
-        LibraryService.setServerAddress(SERVER_ADDRESS);
-
+        setContentView(R.layout.activity_register);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mNameView = (EditText) findViewById(R.id.name);
+        mStudentnumberView = (EditText) findViewById(R.id.studentnumber);
+        mStudentnumberView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptRegistration();
                     return true;
                 }
                 return false;
             }
         });
 
-        Button mSignInButton = (Button) findViewById(R.id.btn_sign_in);
-        mSignInButton.setOnClickListener(new OnClickListener() {
+        Button mRegisterButton = (Button) findViewById(R.id.btn_register);
+        mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptRegistration();
             }
         });
 
-        Button mRegistrationButton = (Button) findViewById(R.id.btn_start_registration);
-        mRegistrationButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Gadgeothek", "GOTO Registration Activity");
-                final Intent registerActivity = new Intent(getApplicationContext(), RegisterActivity.class);
-                registerActivity.putExtra("email",mEmailView.getText().toString());
-                registerActivity.putExtra("password",mPasswordView.getText().toString());
-                startActivity(registerActivity);
-            }
-        });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        mRegisterFormView = findViewById(R.id.register_form);
+        mProgressView = findViewById(R.id.register_progress);
     }
 
     private void populateAutoComplete() {
@@ -153,26 +139,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptRegistration() {
+
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
+        mNameView.setError(null);
+        mStudentnumberView.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String name = mEmailView.getText().toString();
+        String studentnumber = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
+
+        // Check the inputfields from the bottom to top
+        // 1. Password
         if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError("This field is required");
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_incorrect_password));
             focusView = mPasswordView;
             cancel = true;
         }
-
-        // Check for a valid email address.
+        // 2. Email
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
@@ -180,6 +176,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
+            cancel = true;
+        }
+
+        // 3. Student Number
+        if (TextUtils.isEmpty(studentnumber)) {
+            mStudentnumberView.setError(getString(R.string.error_field_required));
+            focusView = mStudentnumberView;
+            cancel = true;
+        }
+
+        // 4. Full Name
+        if (TextUtils.isEmpty(name)) {
+            mNameView.setError(getString(R.string.error_field_required));
+            focusView = mNameView;
             cancel = true;
         }
 
@@ -191,8 +201,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-
-            LibraryService.login(email, password,
+            LibraryService.register(email, password,name,studentnumber,
 
                     new Callback<Boolean>() {
 
@@ -200,11 +209,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         public void onCompletion(Boolean input) {
                             showProgress(false);
                             if (input) {
-                                Log.d("Gadgeothek", "Login erfolgreich!");
+                                // TODO: Go to main activity
+                                Log.d("Gadgeothek", "Registration erfolgreich!");
                                 finish();
                             } else {
-                                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                                Log.w("Gadgeothek", "Login fehlgeschlagen.");
+                                mEmailView.setError(getString(R.string.error_invalid_email));
+                                Log.w("Gadgeothek", "Registration fehlgeschlagen.");
                             }
                         }
 
@@ -219,8 +229,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailValid(String email) {
-        return email.contains("@hsr.ch");
+        return email.contains("@");
     }
+
+    private boolean isPasswordValid(String password) {
+        return password.length() > 4;
+    }
+
 
     /**
      * Shows the progress UI and hides the login form.
@@ -233,12 +248,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegisterFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -254,7 +269,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -295,7 +310,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
+                new ArrayAdapter<>(RegisterActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
