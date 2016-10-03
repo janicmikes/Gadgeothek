@@ -38,15 +38,23 @@ public class MainActivity extends AppCompatActivity
         fragmentManager = getFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
 
-        // TODO: Decide if login or settings Screen is shown
-        //if (serveraddress != null) then
-        LoginFragment fragment = new LoginFragment();
+        // TODO: Decide if login / settings or gadgets screen is shown
+
+        // if (serveraddress == null) then
+        //  SettingsFragment fragment = new SettingsFragment();
+        //setTitle(getString(R.string.title_activity_settings));
+        // else if (logintoken != null) then
+        //  GadgetsFragment fragment = new GadgetsFragment();
+        //setTitle(getString(R.string.title_activity_gadgets));
         // else
-        //SettingsActivityFragment fragment = new SettingsActivityFragment();
+        LoginFragment fragment = new LoginFragment();
+        setTitle(getString(R.string.title_activity_login));
         //
 
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
+
+        drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override
@@ -100,10 +108,10 @@ public class MainActivity extends AppCompatActivity
                 //fragmentClass = GadgetsFragment.class;
                 break;
             case R.id.nav_reservations:
-                //fragmentClass = GadgetsFragment.class;
+                //fragmentClass = ReservationsFragment.class;
                 break;
             case R.id.nav_loans:
-                //fragmentClass = GadgetsFragment.class;
+                //fragmentClass = LoansFragment.class;
                 break;
             case R.id.nav_logout:
                 fragmentClass = LoginFragment.class;
@@ -114,13 +122,14 @@ public class MainActivity extends AppCompatActivity
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();
+
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.fragment_container, fragment);
+            fragmentTransaction.commit();
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, fragment);
-        fragmentTransaction.commit();
 
         item.setChecked(true);
         setTitle(item.getTitle());
