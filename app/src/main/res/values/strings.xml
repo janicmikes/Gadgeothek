@@ -1,6 +1,16 @@
 <resources>
     <string name="app_name">Gadgeothek</string>
+    <string name="title_activity_main">MainActivity</string>
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="nav_gadgets">Gadgets</string>
+    <string name="nav_reservations">Reservations</string>
+    <string name="nav_loans">Loans</string>
+    <string name="nav_logout">Logout</string>
+    <string name="nav_group_account">Account</string>
     <!-- Strings related to login and registring -->
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_register">Register</string>
