@@ -150,8 +150,8 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        String name = mEmailView.getText().toString();
-        String studentnumber = mPasswordView.getText().toString();
+        String name = mNameView.getText().toString();
+        String studentnumber = mStudentnumberView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
