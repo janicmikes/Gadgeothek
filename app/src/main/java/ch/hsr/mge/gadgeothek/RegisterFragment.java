@@ -43,10 +43,6 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class RegisterFragment extends Fragment {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
     public static final String ARG_EMAIL = "email";
     public static final String ARG_PASSWORD = "password";
 
@@ -69,7 +65,6 @@ public class RegisterFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // Set up the login form.
         mEmailView = (EditText) getView().findViewById(R.id.email);
-
         mPasswordView = (EditText) getView().findViewById(R.id.password);
         mNameView = (EditText) getView().findViewById(R.id.name);
         mStudentnumberView = (EditText) getView().findViewById(R.id.studentnumber);

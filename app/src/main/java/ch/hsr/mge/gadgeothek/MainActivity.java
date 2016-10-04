@@ -16,9 +16,6 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,24 +32,21 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        fragmentManager = getFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-
         // TODO: Decide if login / settings or gadgets screen is shown
-
+        Fragment startFragment = null;
         // if (serveraddress == null) then
-        //  SettingsFragment fragment = new SettingsFragment();
+        //  startFragment = new SettingsFragment();
         //setTitle(getString(R.string.title_activity_settings));
         // else if (logintoken != null) then
-        //  GadgetsFragment fragment = new GadgetsFragment();
+        //  startFragment = new GadgetsFragment();
         //setTitle(getString(R.string.title_activity_gadgets));
         // else
-        LoginFragment fragment = new LoginFragment();
+        startFragment = new LoginFragment();
         setTitle(getString(R.string.title_activity_login));
         //
 
-        fragmentTransaction.add(R.id.fragment_container, fragment);
-        fragmentTransaction.commit();
+        // add the starting fragment
+        getFragmentManager().beginTransaction().add(R.id.fragment_container, startFragment).commit();
 
         drawer.closeDrawer(GravityCompat.START);
     }
@@ -76,28 +70,23 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        Fragment fragment = null;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            //SettingsActivityFragment fragment = new SettingsActivityFragment();
-            //fragmentTransaction.add(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
-            return true;
+        switch (item.getItemId()){
+            case R.id.action_settings:
+//                fragment = new SettingsActivityFragment();
+                break;
+
         }
+
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container,fragment).commit();
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
         Fragment fragment = null;
         Class fragmentClass = null;
 
@@ -123,9 +112,7 @@ public class MainActivity extends AppCompatActivity
         try {
             fragment = (Fragment) fragmentClass.newInstance();
 
-            fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
         } catch (Exception e){
             e.printStackTrace();
         }

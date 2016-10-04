@@ -26,10 +26,6 @@ import ch.hsr.mge.gadgeothek.service.LibraryService;
  */
 public class LoginFragment extends Fragment  {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
     private static final String SERVER_ADDRESS = "http://10.0.2.2:8080/public";
 
     // UI references.
