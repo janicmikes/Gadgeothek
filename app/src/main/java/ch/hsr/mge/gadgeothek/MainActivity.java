@@ -4,9 +4,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,9 +15,6 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,18 +32,23 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        fragmentManager = getFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-
-        // TODO: Decide if login or settings Screen is shown
-        //if (serveraddress != null) then
-        //LoginActivityFragment fragment = new LoginActivityFragment();
+        // TODO: Decide if login / settings or gadgets screen is shown
+        Fragment startFragment = null;
+        // if (serveraddress == null) then
+        //  startFragment = new SettingsFragment();
+        //setTitle(getString(R.string.title_activity_settings));
+        // else if (logintoken != null) then
+        //  startFragment = new GadgetsFragment();
+        //setTitle(getString(R.string.title_activity_gadgets));
         // else
-        //SettingsActivityFragment fragment = new SettingsActivityFragment();
+        startFragment = new LoginFragment();
+        setTitle(getString(R.string.title_activity_login));
         //
 
-        //fragmentTransaction.add(R.id.fragment_container, fragment);
-        fragmentTransaction.commit();
+        // add the starting fragment
+        getFragmentManager().beginTransaction().add(R.id.fragment_container, startFragment).commit();
+
+        drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override
@@ -71,47 +70,58 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        Fragment fragment = null;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            //SettingsActivityFragment fragment = new SettingsActivityFragment();
-            //fragmentTransaction.add(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
-            return true;
+        switch (item.getItemId()){
+            case R.id.action_settings:
+//                fragment = new SettingsActivityFragment();
+                break;
+
         }
+
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container,fragment).commit();
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
         Fragment fragment = null;
+        Class fragmentClass = null;
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        if (id == R.id.nav_gadgets) {
-            //fragment = new GadgetsActivityFragment();
-        } else if (id == R.id.nav_reservations) {
-            //fragment = new GadgetsActivityFragment();
-        } else if (id == R.id.nav_loans) {
-            //fragment = new GadgetsActivityFragment();
-        } else if (id == R.id.nav_logout) {
-            //fragment = new GadgetsActivityFragment();
+        switch (item.getItemId()){
+            case R.id.nav_gadgets:
+                //fragmentClass = GadgetsFragment.class;
+                break;
+            case R.id.nav_reservations:
+                //fragmentClass = ReservationsFragment.class;
+                break;
+            case R.id.nav_loans:
+                //fragmentClass = LoansFragment.class;
+                break;
+            case R.id.nav_logout:
+                fragmentClass = LoginFragment.class;
+                break;
+            default:
+                //fragmentClass = GadgetsFragment.class;
         }
 
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, fragment);
-        fragmentTransaction.commit();
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
 
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        item.setChecked(true);
+        setTitle(item.getTitle());
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 }
