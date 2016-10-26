@@ -3,18 +3,31 @@ package ch.hsr.mge.gadgeothek;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import ch.hsr.mge.gadgeothek.domain.Gadget;
+import ch.hsr.mge.gadgeothek.domain.Reservation;
+import ch.hsr.mge.gadgeothek.service.Callback;
+import ch.hsr.mge.gadgeothek.service.LibraryService;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GadgetsFragment.IHandleGadgetsFragment, ReservationsFragment.IHandleReservationsFragment, LoansFragment.IHandleLoansFragment, GadgetDetailFragment.IHandleGadgetDetailFragment {
+
+    GadgetsFragment gadgetsFragment;
+    ReservationsFragment reservationsFragment;
+    LoansFragment loansFragment;
+    GadgetDetailFragment gadgetDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,21 +45,14 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // TODO: Decide if login / settings or gadgets screen is shown
-        Fragment startFragment = null;
-        // if (serveraddress == null) then
-        //  startFragment = new SettingsFragment();
-        //setTitle(getString(R.string.title_activity_settings));
-        // else if (logintoken != null) then
-        //  startFragment = new GadgetsFragment();
-        //setTitle(getString(R.string.title_activity_gadgets));
-        // else
-        startFragment = new LoginFragment();
-        setTitle(getString(R.string.title_activity_login));
-        //
+        gadgetsFragment = new GadgetsFragment();
+        reservationsFragment = new ReservationsFragment();
+        loansFragment = new LoansFragment();
+        gadgetDetailFragment = new GadgetDetailFragment();
 
-        // add the starting fragment
-        getFragmentManager().beginTransaction().add(R.id.fragment_container, startFragment).commit();
+        //
+        setTitle(getString(R.string.nav_gadgets));
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, gadgetsFragment).commit();
 
         drawer.closeDrawer(GravityCompat.START);
     }
@@ -62,66 +68,86 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Fragment fragment = null;
-
-        switch (item.getItemId()){
-            case R.id.action_settings:
-//                fragment = new SettingsActivityFragment();
-                break;
-
-        }
-
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container,fragment).commit();
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        Fragment fragment = null;
-        Class fragmentClass = null;
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.nav_gadgets:
-                //fragmentClass = GadgetsFragment.class;
+                snackIt("Showing Gadgets");
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container, gadgetsFragment).commit();
                 break;
             case R.id.nav_reservations:
-                //fragmentClass = ReservationsFragment.class;
+                snackIt("Showing Reservations");
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container, reservationsFragment).commit();
                 break;
             case R.id.nav_loans:
-                //fragmentClass = LoansFragment.class;
+                snackIt("Showing Loans");
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container, loansFragment).commit();
                 break;
             case R.id.nav_logout:
-                fragmentClass = LoginFragment.class;
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                getApplicationContext().startActivity(intent);
                 break;
-            default:
-                //fragmentClass = GadgetsFragment.class;
         }
-
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
 
         item.setChecked(true);
         setTitle(item.getTitle());
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    @Override
+    public void onShowGadgetDetail(Gadget gadget) {
+        snackIt("Show Details");
+        // TODO: Detailview mit den entsprechenden Daten abfuellen
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, gadgetDetailFragment).commit();
+    }
+
+    @Override
+    public void onReserveGadget(Gadget gadget) {
+        snackIt("Reserve a Gadget...");
+        LibraryService.reserveGadget(gadget, new Callback<Boolean>() {
+
+            @Override
+            public void onCompletion(Boolean input) {
+                if (input) {
+                    snackIt("Reservation successful");
+                } else {
+                    snackIt("Reservation NOT successful");
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                snackIt("Error onReserveGadget: " + message);
+            }
+        });
+    }
+
+    @Override
+    public void onDeleteReservation(Reservation reservation) {
+        LibraryService.deleteReservation(reservation, new Callback<Boolean>() {
+
+            @Override
+            public void onCompletion(Boolean input) {
+                if (input) {
+                    snackIt("Reservation deleted");
+                } else {
+                    snackIt("Reservation NOT deleted");
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                snackIt("Error onDeleteReservation: " + message);
+            }
+        });
+    }
+
+
+    private void snackIt(String message) {
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), message, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 }

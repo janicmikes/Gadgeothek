@@ -1,19 +1,22 @@
 <resources>
     <string name="app_name">Gadgeothek</string>
-    <string name="title_activity_main">Gadgeothek</string>
+    <string name="title_activity_main">Gadgeothek (Main)</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
     <string name="nav_gadgets">Gadgets</string>
     <string name="nav_reservations">Reservations</string>
     <string name="nav_loans">Loans</string>
     <string name="nav_logout">Logout</string>
     <string name="nav_group_account">Account</string>
+
     <!-- Strings related to login and registring -->
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_register">Register</string>
+
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_name">Full Name</string>
@@ -25,4 +28,8 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="action_register_short">Register</string>
+    <string name="prompt_server">Server</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
