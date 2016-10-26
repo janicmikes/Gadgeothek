@@ -30,31 +30,15 @@ import ch.hsr.mge.gadgeothek.service.LibraryService;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginFragment extends Fragment implements OnClickListener, AdapterView.OnItemSelectedListener {
+public class LoginFragment extends Fragment implements OnClickListener {
 
     EditText server;
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 
     public interface IHandleLoginFragment {
         void onAttemptLogin(String email, String password);
         void onStartRegistration();
     }
-
-    public enum Errors {
-        INVALID_PASSWORD,
-        OTHER
-    }
-
-    private static final String SERVER_ADDRESS = "http://10.0.2.2:8080/public";
 
     // UI references.
     EditText mServerView;
@@ -90,11 +74,6 @@ public class LoginFragment extends Fragment implements OnClickListener, AdapterV
 
         super.onViewCreated(view, savedInstanceState);
 
-
-        //TODO: get server address from settings
-        Log.d("Gadgeothek", "Setting Server Address to: " + SERVER_ADDRESS);
-        LibraryService.setServerAddress(SERVER_ADDRESS);
-
         // Set up the login form.
         mServerView = (EditText) getView().findViewById(R.id.server);
         mEmailView = (EditText) getView().findViewById(R.id.email);
@@ -110,30 +89,12 @@ public class LoginFragment extends Fragment implements OnClickListener, AdapterV
             }
         });
 
-//        Button mSignInButton = (Button) getView().findViewById(R.id.btn_sign_in);
-//        mSignInButton.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                attemptLogin();
-//            }
-//        });
-
-//        Button mRegistrationButton = (Button) getView().findViewById(R.id.btn_start_registration);
-//        mRegistrationButton.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d("Gadgeothek", "GOTO Registration Activity");
-//                Fragment fragment = new RegisterFragment();
-//                Bundle arguments = new Bundle();
-//                arguments.putString(RegisterFragment.ARG_EMAIL, mEmailView.getText().toString());
-//                arguments.putString(RegisterFragment.ARG_PASSWORD, mPasswordView.getText().toString());
-//                fragment.setArguments(arguments);
-//                getFragmentManager().beginTransaction().replace(R.id.fragment_container, new RegisterFragment()).commit();
-//            }
-//        });
-
         mLoginFormView = getView().findViewById(R.id.login_form);
         mProgressView = getView().findViewById(R.id.login_progress);
+
+
+        // TODO: restore server URL from local datastore
+        mServerView.setText("http://mge1.dev.ifs.hsr.ch/public");
     }
 
 
@@ -238,24 +199,6 @@ public class LoginFragment extends Fragment implements OnClickListener, AdapterV
                 break;
             }
 
-        }
-    }
-
-    public void handleError(Errors error){
-        handleError(error,null);
-    }
-
-    public void handleError(Errors error, String message){
-        switch (error){
-            case INVALID_PASSWORD: {
-                Log.w("Gadgeothek", "Login fehlgeschlagen.");
-                //TODO: Set focus on Password Field (and set Hint)
-                break;
-            }
-            case OTHER: {
-                Log.w("Gadgeothek", "Login fehlgeschlagen." + message);
-                break;
-            }
         }
     }
 }

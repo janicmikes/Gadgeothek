@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -48,15 +49,6 @@ public class RegisterFragment extends Fragment {
         void onCancelRegistration();
     }
 
-    public enum Errors {
-        ACCOUNT_ALREADY_EXISTS,
-        INVALID_EMAIL_ADDRESS,
-        OTHER
-    }
-
-    public static final String ARG_EMAIL = "email";
-    public static final String ARG_PASSWORD = "password";
-
     // UI references.
     EditText mEmailView;
     EditText mPasswordView;
@@ -65,10 +57,22 @@ public class RegisterFragment extends Fragment {
     private View mProgressView;
     private View mRegisterFormView;
 
+    private IHandleRegisterFragment activity;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_register, container, false);
+    }
+
+    @Override
+    public void onAttach(Context activity) {
+        super.onAttach(activity);
+        if (activity instanceof IHandleRegisterFragment) {
+            this.activity = (IHandleRegisterFragment) activity;
+        } else {
+            throw new AssertionError("Activity must implement IHandleLoginFragment");
+        }
     }
 
     @Override
@@ -79,10 +83,11 @@ public class RegisterFragment extends Fragment {
         mPasswordView = (EditText) getView().findViewById(R.id.password);
         mNameView = (EditText) getView().findViewById(R.id.name);
         mStudentnumberView = (EditText) getView().findViewById(R.id.studentnumber);
-        mStudentnumberView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == R.id.register || id == EditorInfo.IME_NULL) {
                     attemptRegistration();
                     return true;
                 }
@@ -111,6 +116,8 @@ public class RegisterFragment extends Fragment {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptRegistration() {
+
+
 
         // Reset errors.
         mEmailView.setError(null);
@@ -165,13 +172,10 @@ public class RegisterFragment extends Fragment {
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
             showProgress(true);
+            activity.onAttemptRegistration(mEmailView.getText().toString(), mPasswordView.getText().toString(), mNameView.getText().toString(), mStudentnumberView.getText().toString());
 
         }
     }
