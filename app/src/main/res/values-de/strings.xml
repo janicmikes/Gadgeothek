@@ -23,5 +23,6 @@
     <string name="nav_reservations">Reservationen</string>
     <string name="navigation_drawer_close">Navigation schliessen</string>
     <string name="navigation_drawer_open">Navigation öffnen</string>
-    <string name="title_activity_main">Gadgeothek</string>
+    <string name="title_activity_main">Gadgeothek (Haupt)</string>
+    <string name="prompt_server">Server</string>
 </resources>

@@ -43,14 +43,25 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class RegisterFragment extends Fragment {
 
+    public interface IHandleRegisterFragment {
+        void onAttemptRegistration(String email, String password, String name, String studentnumber);
+        void onCancelRegistration();
+    }
+
+    public enum Errors {
+        ACCOUNT_ALREADY_EXISTS,
+        INVALID_EMAIL_ADDRESS,
+        OTHER
+    }
+
     public static final String ARG_EMAIL = "email";
     public static final String ARG_PASSWORD = "password";
 
     // UI references.
-    private EditText mEmailView;
-    private EditText mPasswordView;
-    private EditText mNameView;
-    private EditText mStudentnumberView;
+    EditText mEmailView;
+    EditText mPasswordView;
+    EditText mNameView;
+    EditText mStudentnumberView;
     private View mProgressView;
     private View mRegisterFormView;
 
@@ -161,30 +172,7 @@ public class RegisterFragment extends Fragment {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            LibraryService.register(email, password,name,studentnumber,
 
-                    new Callback<Boolean>() {
-
-                        @Override
-                        public void onCompletion(Boolean input) {
-                            showProgress(false);
-                            if (input) {
-                                // TODO: Go to main activity
-                                Log.d("Gadgeothek", "Registration erfolgreich!");
-                                getFragmentManager().beginTransaction().replace(android.R.id.content, new LoginFragment()).commit();
-                            } else {
-                                mEmailView.setError(getString(R.string.error_invalid_email));
-                                Log.w("Gadgeothek", "Registration fehlgeschlagen.");
-                            }
-                        }
-
-                        @Override
-                        public void onError(String message) {
-                            Log.e("Gadgeothek", "Login-Fehler:" + message);
-                        }
-                    }
-
-            );
         }
     }
 
@@ -201,7 +189,7 @@ public class RegisterFragment extends Fragment {
      * Shows the progress UI and hides the login form.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
+    void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.

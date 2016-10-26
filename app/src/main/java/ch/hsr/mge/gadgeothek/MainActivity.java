@@ -16,6 +16,10 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    GadgetsFragment gadgetsFragment;
+    ReservationsFragment reservationsFragment;
+    LoansFragment loansFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,21 +36,17 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // TODO: Decide if login / settings or gadgets screen is shown
+        gadgetsFragment = new GadgetsFragment();
+        reservationsFragment = new ReservationsFragment();
+        loansFragment = new LoansFragment();
+
         Fragment startFragment = null;
-        // if (serveraddress == null) then
-        //  startFragment = new SettingsFragment();
-        //setTitle(getString(R.string.title_activity_settings));
-        // else if (logintoken != null) then
-        //  startFragment = new GadgetsFragment();
-        //setTitle(getString(R.string.title_activity_gadgets));
-        // else
         startFragment = new LoginFragment();
         setTitle(getString(R.string.title_activity_login));
         //
 
         // add the starting fragment
-        getFragmentManager().beginTransaction().add(R.id.fragment_container, startFragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, gadgetsFragment).commit();
 
         drawer.closeDrawer(GravityCompat.START);
     }

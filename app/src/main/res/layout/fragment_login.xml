@@ -19,6 +19,18 @@
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/server"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/prompt_server"
+            android:inputType="textUri" />
+    </android.support.design.widget.TextInputLayout>
+
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
