@@ -11,10 +11,16 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ch.hsr.mge.gadgeothek.domain.Gadget;
 import ch.hsr.mge.gadgeothek.domain.Reservation;
@@ -49,6 +55,9 @@ public class MainActivity extends AppCompatActivity
         reservationsFragment = new ReservationsFragment();
         loansFragment = new LoansFragment();
         gadgetDetailFragment = new GadgetDetailFragment();
+        //
+
+
 
         //
         setTitle(getString(R.string.nav_gadgets));
@@ -56,6 +65,8 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer(GravityCompat.START);
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -145,8 +156,8 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-
-    private void snackIt(String message) {
+    @Override
+    public void snackIt(String message) {
         Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), message, Snackbar.LENGTH_LONG);
         snackbar.show();
     }
