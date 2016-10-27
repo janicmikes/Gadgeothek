@@ -43,3 +43,4 @@ captures/
 ### Android Studio default
 .externalNativeBuild
 .idea/
+server/
