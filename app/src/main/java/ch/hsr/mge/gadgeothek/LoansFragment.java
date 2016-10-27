@@ -1,5 +1,6 @@
 package ch.hsr.mge.gadgeothek;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -49,6 +50,20 @@ public class LoansFragment extends Fragment {
                     + " must implement IHandleLoansFragment");
         }
     }
+
+    /**
+     * Code duplication for Level API 22 support
+     */
+    public void onAttach(Activity context) {
+        super.onAttach(context);
+        if (context instanceof IHandleLoansFragment) {
+            mListener = (IHandleLoansFragment) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement IHandleLoansFragment");
+        }
+    }
+
 
     @Override
     public void onDetach() {

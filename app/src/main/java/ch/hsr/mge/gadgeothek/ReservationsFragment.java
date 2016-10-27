@@ -1,5 +1,6 @@
 package ch.hsr.mge.gadgeothek;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -42,6 +43,19 @@ public class ReservationsFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof IHandleReservationsFragment) {
+            mListener = (IHandleReservationsFragment) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement IHandleReservationsFragment");
+        }
+    }
+
+    /**
+     * Code duplication for API Level 22 support
+     */
+    public void onAttach(Activity context) {
         super.onAttach(context);
         if (context instanceof IHandleReservationsFragment) {
             mListener = (IHandleReservationsFragment) context;

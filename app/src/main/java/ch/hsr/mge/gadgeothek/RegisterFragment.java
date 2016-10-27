@@ -3,6 +3,7 @@ package ch.hsr.mge.gadgeothek;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -67,6 +68,18 @@ public class RegisterFragment extends Fragment {
 
     @Override
     public void onAttach(Context activity) {
+        super.onAttach(activity);
+        if (activity instanceof IHandleRegisterFragment) {
+            this.activity = (IHandleRegisterFragment) activity;
+        } else {
+            throw new AssertionError("Activity must implement IHandleLoginFragment");
+        }
+    }
+
+    /**
+     * Code duplication for API Level 22 support
+     */
+    public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (activity instanceof IHandleRegisterFragment) {
             this.activity = (IHandleRegisterFragment) activity;

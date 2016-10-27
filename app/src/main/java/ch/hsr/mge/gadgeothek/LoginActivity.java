@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
         setTitle(getString(R.string.title_activity_login));
 
         // add the starting fragment
-        getFragmentManager().beginTransaction().replace(R.id.login_fragment_container, loginFragment).commit();
+        getFragmentManager().beginTransaction().add(R.id.login_fragment_container, loginFragment).commit();
     }
 
     @Override

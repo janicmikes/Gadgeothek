@@ -1,5 +1,6 @@
 package ch.hsr.mge.gadgeothek;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -85,7 +86,19 @@ public class GadgetsFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof IHandleGadgetsFragment) {
             mListener = (IHandleGadgetsFragment) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement IHandleGadgetDetailFragment");
+        }
+    }
 
+    /**
+     * Code duplication to enable API Level 22 support
+     */
+    public void onAttach(Activity context) {
+        super.onAttach(context);
+        if (context instanceof IHandleGadgetsFragment) {
+            mListener = (IHandleGadgetsFragment) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement IHandleGadgetDetailFragment");
