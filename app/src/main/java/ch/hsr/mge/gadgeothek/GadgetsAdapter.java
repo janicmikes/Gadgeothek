@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ch.hsr.mge.gadgeothek.domain.Gadget;
@@ -24,8 +25,13 @@ public class GadgetsAdapter extends RecyclerView.Adapter<GadgetsAdapter.MyViewHo
     }
 
 
-    public GadgetsAdapter(List<Gadget> gadgetList) {
+    public GadgetsAdapter() {
+        this.gadgetList = new ArrayList<>();
+    }
+
+    public void setGadgetList(List<Gadget> gadgetList){
         this.gadgetList = gadgetList;
+        this.notifyDataSetChanged();
     }
 
     @Override
