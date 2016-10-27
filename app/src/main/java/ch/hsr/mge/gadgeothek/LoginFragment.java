@@ -107,6 +107,10 @@ public class LoginFragment extends Fragment implements OnClickListener {
 
         // TODO: restore server URL from local datastore
         mServerView.setText("http://mge1.dev.ifs.hsr.ch/public");
+
+        // Init for DEV REMOVE on RELEASE
+        mEmailView.setText("m@hsr.ch");
+        mPasswordView.setText("12345");
     }
 
 
