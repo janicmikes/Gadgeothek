@@ -18,17 +18,32 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import ch.hsr.mge.gadgeothek.domain.Gadget;
+import ch.hsr.mge.gadgeothek.domain.Loan;
 import ch.hsr.mge.gadgeothek.domain.Reservation;
 import ch.hsr.mge.gadgeothek.service.Callback;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GadgetsFragment.IHandleGadgetsFragment, ReservationsFragment.IHandleReservationsFragment, LoansFragment.IHandleLoansFragment, GadgetDetailFragment.IHandleGadgetDetailFragment {
+
+    private Gadget detailGadget;
+    private Reservation detailReservation;
+    private Loan detailLoan;
+
+    private Stack<Fragment> history = new Stack<>();
+    private GadgetDetailFragment.DetailType detailType;
+
+    public interface ClickListener {
+        void onClick(View view, int position);
+        void onLongClick(View view, int position);
+    }
 
     GadgetsFragment gadgetsFragment;
     ReservationsFragment reservationsFragment;
@@ -62,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         //
         setTitle(getString(R.string.nav_gadgets));
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, gadgetsFragment).commit();
-
+        history.push(gadgetsFragment);
         drawer.closeDrawer(GravityCompat.START);
     }
 
@@ -74,7 +89,13 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            // go to last fragment on stack
+            if(history.isEmpty()){
+                // no Fragment to go to
+            } else {
+                history.pop();
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container, history.peek()).commit();
+            }
         }
     }
 
@@ -86,16 +107,26 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_gadgets:
                 snackIt("Showing Gadgets");
                 getFragmentManager().beginTransaction().replace(R.id.fragment_container, gadgetsFragment).commit();
+                if(history.peek() != gadgetsFragment) {
+                    history.push(gadgetsFragment);
+                }
                 break;
             case R.id.nav_reservations:
                 snackIt("Showing Reservations");
                 getFragmentManager().beginTransaction().replace(R.id.fragment_container, reservationsFragment).commit();
+                if(history.peek() != reservationsFragment) {
+                    history.push(reservationsFragment);
+                }
                 break;
             case R.id.nav_loans:
                 snackIt("Showing Loans");
                 getFragmentManager().beginTransaction().replace(R.id.fragment_container, loansFragment).commit();
+                if(history.peek() != loansFragment) {
+                    history.push(loansFragment);
+                }
                 break;
             case R.id.nav_logout:
+                history.clear();
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 getApplicationContext().startActivity(intent);
                 break;
@@ -110,15 +141,46 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onShowGadgetDetail(Gadget gadget) {
-        snackIt("Show Details");
-        // TODO: Detailview mit den entsprechenden Daten abfuellen
+        this.detailGadget = gadget;
+        detailType = GadgetDetailFragment.DetailType.GADGET;
+
+        showDetailView();
+
+    }
+
+//    @Override
+//    public void setTitle(String title){
+//        setTitle(title);
+//    }
+
+    private void showDetailView() {
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, gadgetDetailFragment).commit();
+        history.push(gadgetDetailFragment);
     }
 
     @Override
-    public void onReserveGadget(Gadget gadget) {
-        snackIt("Reserve a Gadget...");
-        LibraryService.reserveGadget(gadget, new Callback<Boolean>() {
+    public Gadget getDetailGadget() {
+        return detailGadget;
+    }
+
+    @Override
+    public Reservation getDetailReservation() {
+        return this.detailReservation;
+    }
+
+    @Override
+    public Loan getDetailLoan() {
+        return this.detailLoan;
+    }
+
+    public GadgetDetailFragment.DetailType getDetailType(){
+        return this.detailType;
+    }
+
+    @Override
+    public void onReserveGadget() {
+
+        LibraryService.reserveGadget(detailGadget, new Callback<Boolean>() {
 
             @Override
             public void onCompletion(Boolean input) {
@@ -137,8 +199,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDeleteReservation(Reservation reservation) {
-        LibraryService.deleteReservation(reservation, new Callback<Boolean>() {
+    public void onShowReservationDetail(Reservation reservation) {
+        this.detailReservation = reservation;
+        this.detailType = GadgetDetailFragment.DetailType.RESERVATION;
+
+        showDetailView();
+    }
+
+    @Override
+    public void onDeleteReservation() {
+        LibraryService.deleteReservation(detailReservation, new Callback<Boolean>() {
 
             @Override
             public void onCompletion(Boolean input) {
@@ -154,6 +224,14 @@ public class MainActivity extends AppCompatActivity
                 snackIt("Error onDeleteReservation: " + message);
             }
         });
+    }
+
+    @Override
+    public void onShowLoanDetail(Loan loan) {
+        this.detailLoan = loan;
+        this.detailType = GadgetDetailFragment.DetailType.LOAN;
+
+        showDetailView();
     }
 
     @Override
