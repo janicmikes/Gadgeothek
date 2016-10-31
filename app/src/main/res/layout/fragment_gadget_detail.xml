@@ -6,11 +6,6 @@
     android:id="@+id/gadget_detail"
     android:padding="@dimen/activity_vertical_margin">
 
-
-    <!--Label for Condition-->
-
-    <!--Stuff only shown when it is a Reservation -->
-
     <Button
         android:id="@+id/btn_add_reservation"
         android:layout_width="match_parent"
@@ -31,6 +26,17 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:id="@+id/loan_since"
+        android:text="Loan Since"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="12dp"/>
 
     <TextView android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,13 +77,6 @@
         android:layout_below="@+id/gadget_condition"
         android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:text="Loan Until"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_add_reservation"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="12dp"
-        android:id="@+id/loan_until" />
+
 
 </RelativeLayout>
