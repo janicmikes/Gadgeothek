@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ch.hsr.mge.gadgeothek.domain.Gadget;
@@ -28,7 +27,6 @@ public class GadgetsFragment extends Fragment {
 
     private IHandleGadgetsFragment mListener;
 
-    private List<Gadget> gadgetList = new ArrayList<>();
     private RecyclerView recyclerView;
     private GadgetsAdapter mAdapter;
 
@@ -41,8 +39,6 @@ public class GadgetsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_gadgets, container, false);
-        // TODO: Bind the list actions to the listener
-        // onSelect: onItemSelected(Convert List item to Gadget);
     }
 
     @Override
@@ -50,22 +46,30 @@ public class GadgetsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = (RecyclerView) view.findViewById(R.id.gadgets_recycler_view);
 
-        mAdapter = new GadgetsAdapter(gadgetList);
+        mAdapter = new GadgetsAdapter();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        loadGadgets();
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener((Context) mListener, recyclerView, new MainActivity.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                mListener.onShowGadgetDetail(mAdapter.getGadgetByPosition(position));
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
     }
 
     private void loadGadgets() {
         LibraryService.getGadgets(new Callback<List<Gadget>>() {
             @Override
             public void onCompletion(List<Gadget> input) {
-                gadgetList = input;
-                mListener.snackIt("New Gadgets Loaded");
-                mAdapter.notifyDataSetChanged();
+                mAdapter.setGadgetList(input);
             }
 
             @Override
@@ -75,20 +79,15 @@ public class GadgetsFragment extends Fragment {
         });
     }
 
-    public void onItemSelected(Gadget gadget) {
-        if (mListener != null) {
-            mListener.onShowGadgetDetail(gadget);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof IHandleGadgetsFragment) {
             mListener = (IHandleGadgetsFragment) context;
+            loadGadgets();
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement IHandleGadgetDetailFragment");
+                    + " must implement IHandleGadgetsFragment");
         }
     }
 
@@ -99,9 +98,10 @@ public class GadgetsFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof IHandleGadgetsFragment) {
             mListener = (IHandleGadgetsFragment) context;
+            loadGadgets();
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement IHandleGadgetDetailFragment");
+                    + " must implement IHandleGadgetsFragment");
         }
     }
 
@@ -122,7 +122,6 @@ public class GadgetsFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface IHandleGadgetsFragment {
-        // TODO: Update argument type and name
         void onShowGadgetDetail(Gadget gadget);
         void snackIt(String message);
     }
