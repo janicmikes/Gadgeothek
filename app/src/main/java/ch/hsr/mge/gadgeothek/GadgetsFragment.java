@@ -1,14 +1,13 @@
 package ch.hsr.mge.gadgeothek;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,14 +23,12 @@ import ch.hsr.mge.gadgeothek.service.LibraryService;
  * {@link GadgetsFragment.IHandleGadgetsFragment} interface
  * to handle interaction events.
  */
-public class GadgetsFragment extends Fragment implements RecyclerView.OnItemTouchListener {
+public class GadgetsFragment extends Fragment {
 
     private IHandleGadgetsFragment mListener;
 
-//    private List<Gadget> gadgetList = new ArrayList<>();
     private RecyclerView recyclerView;
     private GadgetsAdapter mAdapter;
-    private GestureDetector gestureDetector;
 
     public GadgetsFragment() {
         // Required empty public constructor
@@ -42,8 +39,6 @@ public class GadgetsFragment extends Fragment implements RecyclerView.OnItemTouc
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_gadgets, container, false);
-        // TODO: Bind the list actions to the listener
-        // onSelect: onItemSelected(Convert List item to Gadget);
     }
 
     @Override
@@ -57,20 +52,17 @@ public class GadgetsFragment extends Fragment implements RecyclerView.OnItemTouc
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-//        gestureDetector = new GestureDetector(mListener, new GestureDetector.SimpleOnGestureListener() {
-//            @Override
-//            public boolean onSingleTapUp(MotionEvent e) {
-//                return true;
-//            }
-//
-//            @Override
-//            public void onLongPress(MotionEvent e) {
-//                View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-////                if (child != null && clickListener != null) {
-////                    clickListener.onLongClick(child, recyclerView.getChildPosition(child));
-////                }
-//            }
-//        });
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener((Context) mListener, recyclerView, new MainActivity.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                mListener.onShowGadgetDetail(mAdapter.getGadgetByPosition(position));
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
     }
 
     private void loadGadgets() {
@@ -87,12 +79,6 @@ public class GadgetsFragment extends Fragment implements RecyclerView.OnItemTouc
         });
     }
 
-    public void onItemSelected(Gadget gadget) {
-        if (mListener != null) {
-            mListener.onShowGadgetDetail(gadget);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -101,7 +87,7 @@ public class GadgetsFragment extends Fragment implements RecyclerView.OnItemTouc
             loadGadgets();
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement IHandleGadgetDetailFragment");
+                    + " must implement IHandleGadgetsFragment");
         }
     }
 
@@ -115,7 +101,7 @@ public class GadgetsFragment extends Fragment implements RecyclerView.OnItemTouc
             loadGadgets();
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement IHandleGadgetDetailFragment");
+                    + " must implement IHandleGadgetsFragment");
         }
     }
 
@@ -123,25 +109,6 @@ public class GadgetsFragment extends Fragment implements RecyclerView.OnItemTouc
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        View child = rv.findChildViewUnder(e.getX(), e.getY());
-        if (child != null && mListener != null && gestureDetector.onTouchEvent(e)) {
-//            clickListener.onClick(child, rv.getChildPosition(child));
-        }
-        return false;
-    }
-
-    @Override
-    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-    }
-
-    @Override
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
     }
 
     /**

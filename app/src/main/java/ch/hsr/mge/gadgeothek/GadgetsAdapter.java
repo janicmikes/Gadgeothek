@@ -10,9 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.hsr.mge.gadgeothek.domain.Gadget;
+import ch.hsr.mge.gadgeothek.domain.Loan;
+import ch.hsr.mge.gadgeothek.domain.Reservation;
 
 public class GadgetsAdapter extends RecyclerView.Adapter<GadgetsAdapter.MyViewHolder> {
     private List<Gadget> gadgetList;
+    private List<Loan> loansList;
+    private List<Reservation> reservationList;
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name, manufacturer;
@@ -27,11 +32,54 @@ public class GadgetsAdapter extends RecyclerView.Adapter<GadgetsAdapter.MyViewHo
 
     public GadgetsAdapter() {
         this.gadgetList = new ArrayList<>();
+        this.loansList = new ArrayList<>();
+        this.reservationList = new ArrayList<>();
     }
 
     public void setGadgetList(List<Gadget> gadgetList){
+        this.reservationList.clear();
+        this.loansList.clear();
+
         this.gadgetList = gadgetList;
+
         this.notifyDataSetChanged();
+    }
+
+    public void setLoanList(List<Loan> loanList){
+        gadgetList.clear();
+        this.reservationList.clear();
+
+        this.loansList = loanList;
+
+        for (Loan loan : loanList) {
+            gadgetList.add(loan.getGadget());
+        }
+
+        this.notifyDataSetChanged();
+    }
+
+    public void setReservationList(List<Reservation> reservationList){
+        gadgetList.clear();
+        this.loansList.clear();
+
+        this.reservationList = reservationList;
+
+        for (Reservation reservation : reservationList) {
+            gadgetList.add(reservation.getGadget());
+        }
+        this.notifyDataSetChanged();
+    }
+
+    public Gadget getGadgetByPosition(int position){
+        return gadgetList.get(position);
+    }
+
+    public Reservation getReservationByPosition(int position) {
+        return reservationList.get(position);
+    }
+
+    public Loan getLoanByPosition(int position){
+        return loansList.get(position);
     }
 
     @Override
