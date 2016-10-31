@@ -108,19 +108,6 @@ public class LoansFragment extends Fragment {
         }
     }
 
-    /**
-     * Code duplication for Level API 22 support
-     */
-    public void onAttach(Activity context) {
-        super.onAttach(context);
-        if (context instanceof IHandleLoansFragment) {
-            mListener = (IHandleLoansFragment) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement IHandleLoansFragment");
-        }
-    }
-
 
     @Override
     public void onDetach() {
