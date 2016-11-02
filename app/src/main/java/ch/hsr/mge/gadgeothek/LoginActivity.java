@@ -60,6 +60,15 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
                             //
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra(MainActivity.ARG_LOGIN_EMAIL, email);
+                            /** Problem: Runtime Exeption was thrown here:
+                                android.util.AndroidRuntimeException: Calling startActivity()
+                             * from outside of an Activity  context requires the FLAG_ACTIVITY_NEW_TASK flag.
+                             * Is this really what you want?
+                             * FIX: from http://stackoverflow.com/questions/3918517/calling-startactivity-from-outside-of-an-activity-context
+                             * Set FLAG_ACTIVITY_NEW_TASK on intent
+                             * @TODO: Ask Stocker what the Problem is
+                             */
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             getApplicationContext().startActivity(intent);
                         } else {
                             loginFragment.mPasswordView.setError("Invalid Password");

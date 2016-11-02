@@ -79,7 +79,7 @@ class Request<T> extends AsyncTask<Void, Void, Pair<String, T>> {
             String message = e.getMessage();
             try {
                 message = gson.fromJson(responseBody, String.class);
-            } catch (JsonParseException _) {
+            } catch (JsonParseException e2) {
             }
             return new Pair<>(message, null);
         } catch (ConnectException e) {
