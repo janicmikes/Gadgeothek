@@ -1,91 +1,174 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ch.hsr.mge.gadgeothek.GadgetDetailFragment"
     android:id="@+id/gadget_detail"
-    android:padding="@dimen/activity_vertical_margin">
+    android:padding="@dimen/activity_vertical_margin"
+    android:columnCount="2"
+    android:rowCount="7">
 
-    <Button
-        android:id="@+id/btn_add_reservation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/action_add_reservation"
-        android:textStyle="bold"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="12dp" />
 
-    <Button
-        android:id="@+id/btn_delete_reservation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/action_delete_reservation"
-        android:visibility="gone"
-        android:textStyle="bold"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="12dp" />
-
-    <TextView
-        android:id="@+id/loan_since"
-        android:text="Loan Since"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="12dp"/>
-
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gadget_name"
-        android:text="Name"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gadget_inventorynumber"
-        android:text="Inventory Number"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:textColor="@color/manufacturer" />
-
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gadget_manufacturer"
-        android:text="Manufacturer"
-        android:layout_below="@+id/gadget_name"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="26dp" />
-
-    <ImageView
+        <TextView
+            android:text="Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/gadget_manufacturer"
-            android:layout_marginTop="8dp"
-            android:id="@+id/gadget_manufacturer_logo"
-            app:srcCompat="@mipmap/ic_unkown"/>
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_gravity="fill"
+            android:layout_rowWeight="1"
+            android:textColor="@color/manufacturer" />
 
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gadget_condition"
-        android:text="Condition"
-        android:layout_alignBaseline="@+id/gadget_manufacturer"
-        android:layout_alignBottom="@+id/gadget_manufacturer"
-        android:layout_alignParentEnd="true" />
+        <TextView
+            android:text="Manufacturer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_gravity="fill"
+            android:layout_rowWeight="1"
+            android:textColor="@color/manufacturer" />
 
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gadget_price"
-        android:text="Price"
-        android:layout_marginTop="36dp"
-        android:layout_below="@+id/gadget_condition"
-        android:layout_alignParentEnd="true" />
+        <TextView
+            android:text="Price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:layout_gravity="fill"
+            android:layout_rowWeight="1"
+            android:textColor="@color/manufacturer" />
+
+        <TextView
+            android:text="Condition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="3"
+            android:layout_column="0"
+            android:layout_gravity="fill"
+            android:layout_rowWeight="1"
+            android:textColor="@color/manufacturer" />
+
+        <TextView
+            android:text="Inventory Number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="4"
+            android:layout_column="0"
+            android:paddingRight="10dp"
+            android:layout_gravity="fill"
+            android:layout_rowWeight="1"
+            android:textColor="@color/manufacturer" />
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/gadget_name"
+                  android:text="Name"
+                  android:layout_row="0"
+                  android:layout_column="1"
+                  android:layout_rowWeight="1"
+                  android:layout_gravity="fill" />
 
 
 
-</RelativeLayout>
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="1"
+                android:layout_column="1"
+                app:srcCompat="@mipmap/ic_unkown"
+                android:layout_gravity="right"
+                android:id="@+id/gadget_manufacturer_logo"/>
+
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/gadget_manufacturer"
+            android:text="Manufacturer"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:layout_rowWeight="1"
+            android:layout_gravity="fill" />
+
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/gadget_price"
+                  android:text="Price"
+                  android:layout_row="2"
+                  android:layout_column="1"
+                  android:layout_rowWeight="1"
+                  android:layout_gravity="fill" />
+
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/gadget_condition"
+            android:text="Condition"
+            android:layout_row="3"
+            android:layout_column="1"
+            android:layout_rowWeight="1"
+            android:layout_gravity="fill" />
+
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/gadget_inventorynumber"
+            android:text="Inventory Number"
+            android:layout_row="4"
+            android:layout_column="1"
+            android:layout_rowWeight="1"
+            android:layout_gravity="fill" />
+
+        <Button
+            android:id="@+id/btn_add_reservation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_add_reservation"
+            android:textStyle="bold"
+            android:layout_row="5"
+            android:layout_column="0"
+            android:layout_columnSpan="2"
+            android:layout_rowSpan="2"
+            android:layout_gravity="bottom"
+            android:layout_rowWeight="1"
+            android:visibility="gone"  />
+
+        <Button
+            android:id="@+id/btn_delete_reservation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_delete_reservation"
+            android:textStyle="bold"
+            android:layout_row="5"
+            android:layout_column="0"
+            android:layout_columnSpan="2"
+            android:layout_rowSpan="2"
+            android:layout_gravity="bottom"
+            android:layout_rowWeight="1"
+            android:visibility="visible"  />
+
+        <TextView
+            android:id="@+id/labelLoanSince"
+            android:text="Loan Since"
+            android:textColor="@color/manufacturer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_row="5"
+            android:layout_column="0"
+            android:layout_gravity="bottom"
+            android:visibility="gone"
+            android:layout_rowWeight="0.7"  />
+
+        <TextView
+            android:id="@+id/loan_since"
+            android:text="Loan Since"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_row="6"
+            android:layout_column="0"
+            android:visibility="gone"
+            android:layout_rowWeight="0.3" />
+
+
+</GridLayout>
