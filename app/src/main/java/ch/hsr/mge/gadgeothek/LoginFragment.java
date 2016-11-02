@@ -3,6 +3,7 @@ package ch.hsr.mge.gadgeothek;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Build;
@@ -57,12 +58,23 @@ public class LoginFragment extends Fragment implements OnClickListener {
         root.findViewById(R.id.btn_start_registration).setOnClickListener(this);
         return root;
     }
-
     @Override
-    public void onAttach(Context activity) {
-        super.onAttach(activity);
-        if (activity instanceof IHandleLoginFragment) {
-            this.activity = (IHandleLoginFragment) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof IHandleLoginFragment) {
+            this.activity = (IHandleLoginFragment) context;
+        } else {
+            throw new AssertionError("Activity must implement IHandleLoginFragment");
+        }
+    }
+
+    /**
+     * Code duplication of onAttach(Context context) to enable API Level 22 compatibility
+    */
+    public void onAttach(Activity context_activity){
+       super.onAttach(context_activity);
+        if (context_activity instanceof IHandleLoginFragment) {
+            this.activity = (IHandleLoginFragment) context_activity;
         } else {
             throw new AssertionError("Activity must implement IHandleLoginFragment");
         }

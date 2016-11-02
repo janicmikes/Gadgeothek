@@ -3,6 +3,8 @@ package ch.hsr.mge.gadgeothek;
 import android.app.Fragment;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +20,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
     LoginFragment loginFragment;
     RegisterFragment registerFragment;
 
-    public static String ARG_SESSION_TOKEN = "";
 
     private Stack<Fragment> history = new Stack<>();
     @Override
@@ -32,11 +33,21 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
         setTitle(getString(R.string.title_activity_login));
 
         // add the starting fragment
-        getFragmentManager().beginTransaction().replace(R.id.login_fragment_container, loginFragment).commit();
+        getFragmentManager().beginTransaction().add(R.id.login_fragment_container, loginFragment).commit();
     }
 
     @Override
-    public void onAttemptLogin(String email, String password) {
+    public void onBackPressed() {
+        if (history.size() > 1) {
+            history.pop();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, history.peek()).commit();
+        } else {
+            // initial fragment reached
+        }
+    }
+
+    @Override
+    public void onAttemptLogin(final String email, String password) {
         LibraryService.setServerAddress(loginFragment.mServerView.getText().toString());
         LibraryService.login(email, password,
                 new Callback<Boolean>() {
@@ -45,31 +56,30 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
                     public void onCompletion(Boolean input) {
                         loginFragment.showProgress(false);
                         if (input) {
-                            Log.d("Gadgeothek", "Login erfolgreich!");
+                            history.clear();
+                            //
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            // TODO: Session Token auslesen und abspeichern, bzw der Main Activity mitgeben
-                            intent.putExtra(LoginActivity.ARG_SESSION_TOKEN, input);
+                            intent.putExtra(MainActivity.ARG_LOGIN_EMAIL, email);
                             getApplicationContext().startActivity(intent);
                         } else {
                             loginFragment.mPasswordView.setError("Invalid Password");
-                            Log.w("Gadgeothek", "Login fehlgeschlagen.");
+                            snackIt("Login fehlgeschlagen.");
                         }
                     }
 
                     @Override
                     public void onError(String message) {
-                        //TODO: display message in snackbar
-                        Log.e("Gadgeothek", "Login-Fehler:" + message);
+                        snackIt("Error:" + message);
                     }
                 }
 
         );
     }
 
+
+
     @Override
     public void onStartRegistration() {
-        snackIt("GoTo Register Screen...");
-        Log.e("Gadgeothek", "go to Registration Screen");
         if(loginFragment.mServerView.getText().toString().contains("http://")){
             LibraryService.setServerAddress(loginFragment.mServerView.getText().toString());
             history.push(registerFragment);
@@ -91,13 +101,11 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
                     public void onCompletion(Boolean input) {
                         registerFragment.showProgress(false);
                         if (input) {
-                            Log.d("Gadgeothek", "Registration erfolgreich!");
                             snackIt("Registration successful");
                             onCancelRegistration();
                         } else {
                             registerFragment.mEmailView.setError(getString(R.string.error_invalid_email));
                             snackIt("Registation failed");
-                            Log.w("Gadgeothek", "Registration fehlgeschlagen.");
                         }
                     }
 
@@ -114,7 +122,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
 
     @Override
     public void onCancelRegistration() {
-        Log.e("Gadgeothek", "go back to Login Screen");
         history.push(loginFragment);
 
         setTitle(R.string.title_activity_login);

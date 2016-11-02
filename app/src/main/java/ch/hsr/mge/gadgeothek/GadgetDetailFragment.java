@@ -1,17 +1,14 @@
 package ch.hsr.mge.gadgeothek;
 
+import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import ch.hsr.mge.gadgeothek.domain.Gadget;
 import ch.hsr.mge.gadgeothek.domain.Loan;
@@ -38,7 +35,7 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
     TextView mPrice;
     TextView mConditionView;
 
-    TextView mLoanUntil;
+    TextView mLoanSince;
 
     Button mAddReservation;
     Button mDeleteReservation;
@@ -64,7 +61,7 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
         mPrice = (TextView) getView().findViewById(R.id.gadget_price);
         mConditionView = (TextView) getView().findViewById(R.id.gadget_condition);
 
-        mLoanUntil = (TextView) getView().findViewById(R.id.loan_until);
+        mLoanSince = (TextView) getView().findViewById(R.id.loan_since);
 
         mAddReservation = (Button) getView().findViewById(R.id.btn_add_reservation);
         mDeleteReservation = (Button) getView().findViewById(R.id.btn_delete_reservation);
@@ -78,7 +75,7 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
             case GADGET:
                 gadget = mListener.getDetailGadget();
 
-                mLoanUntil.setVisibility(View.GONE);
+                mLoanSince.setVisibility(View.GONE);
 
                 mAddReservation.setVisibility(View.VISIBLE);
                 mDeleteReservation.setVisibility(View.GONE);
@@ -86,7 +83,7 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
             case RESERVATION:
                 gadget = mListener.getDetailReservation().getGadget();
 
-                mLoanUntil.setVisibility(View.GONE);
+                mLoanSince.setVisibility(View.GONE);
 
                 mAddReservation.setVisibility(View.GONE);
                 mDeleteReservation.setVisibility(View.VISIBLE);
@@ -94,8 +91,8 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
             case LOAN:
                 gadget = mListener.getDetailLoan().getGadget();
 
-                mLoanUntil.setText(mListener.getDetailLoan().getReturnDate().toString());
-                mLoanUntil.setVisibility(View.VISIBLE);
+                mLoanSince.setText(mListener.getDetailLoan().getPickupDate().toString());
+                mLoanSince.setVisibility(View.VISIBLE);
 
                 mAddReservation.setVisibility(View.GONE);
                 mDeleteReservation.setVisibility(View.GONE);
@@ -115,6 +112,19 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof IHandleGadgetDetailFragment) {
+            mListener = (IHandleGadgetDetailFragment) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement IHandleGadgetDetailFragment");
+        }
+    }
+
+    /**
+     * Code duplication for API Level 22 support
+     */
+    public void onAttach(Activity context) {
         super.onAttach(context);
         if (context instanceof IHandleGadgetDetailFragment) {
             mListener = (IHandleGadgetDetailFragment) context;

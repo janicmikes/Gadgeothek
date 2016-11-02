@@ -95,16 +95,15 @@ public class ReservationsFragment extends Fragment {
     }
 
     /**
-     * Code duplication to enable API Level 22 support
+     * Code duplication for API Level 22 support
      */
     public void onAttach(Activity context) {
         super.onAttach(context);
-        if (context instanceof LoansFragment.IHandleLoansFragment) {
-            mListener = (ReservationsFragment.IHandleReservationsFragment) context;
-            loadReservations();
+        if (context instanceof IHandleReservationsFragment) {
+            mListener = (IHandleReservationsFragment) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement IHandleLoansFragment");
+                    + " must implement IHandleReservationsFragment");
         }
     }
 

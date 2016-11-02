@@ -1,8 +1,6 @@
 package ch.hsr.mge.gadgeothek;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -11,17 +9,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 import ch.hsr.mge.gadgeothek.domain.Gadget;
@@ -32,6 +24,8 @@ import ch.hsr.mge.gadgeothek.service.LibraryService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GadgetsFragment.IHandleGadgetsFragment, ReservationsFragment.IHandleReservationsFragment, LoansFragment.IHandleLoansFragment, GadgetDetailFragment.IHandleGadgetDetailFragment {
+
+    public static String ARG_LOGIN_EMAIL = "email";
 
     private Gadget detailGadget;
     private Reservation detailReservation;
@@ -72,13 +66,16 @@ public class MainActivity extends AppCompatActivity
         gadgetDetailFragment = new GadgetDetailFragment();
         //
 
-
-
         //
         setTitle(getString(R.string.nav_gadgets));
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, gadgetsFragment).commit();
         history.push(gadgetsFragment);
         drawer.closeDrawer(GravityCompat.START);
+        //
+
+        String email = getIntent().getStringExtra(ARG_LOGIN_EMAIL);
+        TextView email_menu = (TextView) navigationView.getHeaderView(0).findViewById(R.id.email_menu);
+        email_menu.setText(email);
     }
 
 
@@ -89,12 +86,11 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            // go to last fragment on stack
-            if(history.isEmpty()){
-                // no Fragment to go to
-            } else {
+            if (history.size() > 1) {
                 history.pop();
                 getFragmentManager().beginTransaction().replace(R.id.fragment_container, history.peek()).commit();
+            } else {
+                // initial fragment reached
             }
         }
     }
@@ -105,21 +101,18 @@ public class MainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.nav_gadgets:
-                snackIt("Showing Gadgets");
                 getFragmentManager().beginTransaction().replace(R.id.fragment_container, gadgetsFragment).commit();
                 if(history.peek() != gadgetsFragment) {
                     history.push(gadgetsFragment);
                 }
                 break;
             case R.id.nav_reservations:
-                snackIt("Showing Reservations");
                 getFragmentManager().beginTransaction().replace(R.id.fragment_container, reservationsFragment).commit();
                 if(history.peek() != reservationsFragment) {
                     history.push(reservationsFragment);
                 }
                 break;
             case R.id.nav_loans:
-                snackIt("Showing Loans");
                 getFragmentManager().beginTransaction().replace(R.id.fragment_container, loansFragment).commit();
                 if(history.peek() != loansFragment) {
                     history.push(loansFragment);
@@ -127,8 +120,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_logout:
                 history.clear();
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                getApplicationContext().startActivity(intent);
+                onLogout();
                 break;
         }
 
@@ -177,6 +169,25 @@ public class MainActivity extends AppCompatActivity
         return this.detailType;
     }
 
+    public void onLogout(){
+        LibraryService.logout(new Callback<Boolean>() {
+
+            @Override
+            public void onCompletion(Boolean input) {
+                if (input) {
+                    finish();
+                } else {
+                    snackIt("Logout Failed");
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                snackIt("Error onLogout: " + message);
+            }
+        });
+    }
+
     @Override
     public void onReserveGadget() {
 
@@ -185,9 +196,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onCompletion(Boolean input) {
                 if (input) {
+                    gadgetDetailFragment.mAddReservation.setVisibility(View.GONE);
                     snackIt("Reservation successful");
                 } else {
-                    snackIt("Reservation NOT successful");
+                    snackIt("Reservation failed");
                 }
             }
 
@@ -213,9 +225,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onCompletion(Boolean input) {
                 if (input) {
+                    gadgetDetailFragment.mDeleteReservation.setVisibility(View.GONE);
                     snackIt("Reservation deleted");
                 } else {
-                    snackIt("Reservation NOT deleted");
+                    snackIt("Reservation could not be deleted");
                 }
             }
 

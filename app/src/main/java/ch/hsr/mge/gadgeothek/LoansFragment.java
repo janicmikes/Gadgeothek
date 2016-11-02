@@ -108,6 +108,7 @@ public class LoansFragment extends Fragment {
         }
     }
 
+
     @Override
     public void onDetach() {
         super.onDetach();
