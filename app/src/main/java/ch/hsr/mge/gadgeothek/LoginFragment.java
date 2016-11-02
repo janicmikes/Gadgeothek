@@ -9,24 +9,14 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import ch.hsr.mge.gadgeothek.service.LibraryService;
 
 /**
  * A login screen that offers login via email/password.
@@ -48,7 +38,7 @@ public class LoginFragment extends Fragment implements OnClickListener {
     private View mProgressView;
     private View mLoginFormView;
 
-    private IHandleLoginFragment activity;
+    private IHandleLoginFragment context;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,22 +51,20 @@ public class LoginFragment extends Fragment implements OnClickListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof IHandleLoginFragment) {
-            this.activity = (IHandleLoginFragment) context;
-        } else {
-            throw new AssertionError("Activity must implement IHandleLoginFragment");
-        }
+        _onAttach_API_independent(context);
     }
-
     /**
      * Code duplication of onAttach(Context context) to enable API Level 22 compatibility
     */
-    public void onAttach(Activity context_activity){
-       super.onAttach(context_activity);
-        if (context_activity instanceof IHandleLoginFragment) {
-            this.activity = (IHandleLoginFragment) context_activity;
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        _onAttach_API_independent(activity);
+    }
+    private void _onAttach_API_independent(Context context){
+        if (context instanceof IHandleLoginFragment) {
+            this.context = (IHandleLoginFragment) context;
         } else {
-            throw new AssertionError("Activity must implement IHandleLoginFragment");
+            throw new AssertionError("Context must implement IHandleLoginFragment");
         }
     }
 
@@ -158,7 +146,7 @@ public class LoginFragment extends Fragment implements OnClickListener {
             // perform the user login attempt.
             showProgress(true);
 
-            activity.onAttemptLogin(mEmailView.getText().toString(), mPasswordView.getText().toString());
+            context.onAttemptLogin(mEmailView.getText().toString(), mPasswordView.getText().toString());
 
         }
     }
@@ -211,7 +199,7 @@ public class LoginFragment extends Fragment implements OnClickListener {
                 break;
             }
             case R.id.btn_start_registration: {
-                activity.onStartRegistration();
+                context.onStartRegistration();
                 break;
             }
 

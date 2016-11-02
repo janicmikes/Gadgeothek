@@ -113,21 +113,19 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof IHandleGadgetDetailFragment) {
-            mListener = (IHandleGadgetDetailFragment) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement IHandleGadgetDetailFragment");
-        }
+        _onAttach_API_independent(context);
     }
-
     /**
      * Code duplication for API Level 22 support
      */
-    public void onAttach(Activity context) {
-        super.onAttach(context);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        _onAttach_API_independent(activity);
+    }
+
+    private void _onAttach_API_independent(Context context){
         if (context instanceof IHandleGadgetDetailFragment) {
-            mListener = (IHandleGadgetDetailFragment) context;
+            this.mListener = (IHandleGadgetDetailFragment) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement IHandleGadgetDetailFragment");

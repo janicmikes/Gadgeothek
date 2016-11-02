@@ -69,11 +69,7 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
-        if (activity instanceof IHandleRegisterFragment) {
-            this.activity = (IHandleRegisterFragment) activity;
-        } else {
-            throw new AssertionError("Activity must implement IHandleLoginFragment");
-        }
+        _onAttach_API_independent(activity);
     }
 
     /**
@@ -81,6 +77,10 @@ public class RegisterFragment extends Fragment {
      */
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        _onAttach_API_independent(activity);
+    }
+
+    private void _onAttach_API_independent(Context activity){
         if (activity instanceof IHandleRegisterFragment) {
             this.activity = (IHandleRegisterFragment) activity;
         } else {

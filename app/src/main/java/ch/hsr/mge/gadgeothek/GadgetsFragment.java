@@ -82,20 +82,17 @@ public class GadgetsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof IHandleGadgetsFragment) {
-            mListener = (IHandleGadgetsFragment) context;
-            loadGadgets();
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement IHandleGadgetsFragment");
-        }
+        _onAttach_API_independent(context);
     }
-
     /**
      * Code duplication to enable API Level 22 support
      */
-    public void onAttach(Activity context) {
-        super.onAttach(context);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        _onAttach_API_independent(activity);
+    }
+
+    private void _onAttach_API_independent(Context context){
         if (context instanceof IHandleGadgetsFragment) {
             mListener = (IHandleGadgetsFragment) context;
             loadGadgets();

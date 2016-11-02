@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +73,7 @@ public class ReservationsFragment extends Fragment {
         LibraryService.getReservationsForCustomer(new Callback<List<Reservation>>() {
             @Override
             public void onCompletion(List<Reservation> input) {
+                Log.d("Gadgeothek", "Received Loans from Server: Size: " + input.size());
                 mAdapter.setReservationList(input);
             }
 
@@ -85,13 +87,7 @@ public class ReservationsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof IHandleReservationsFragment) {
-            mListener = (IHandleReservationsFragment) context;
-            loadReservations();
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement IHandleReservationsFragment");
-        }
+        _onAttach_API_independent(context);
     }
 
     /**
@@ -99,8 +95,13 @@ public class ReservationsFragment extends Fragment {
      */
     public void onAttach(Activity context) {
         super.onAttach(context);
+        _onAttach_API_independent(context);
+    }
+
+    private void _onAttach_API_independent(Context context){
         if (context instanceof IHandleReservationsFragment) {
             mListener = (IHandleReservationsFragment) context;
+            loadReservations();
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement IHandleReservationsFragment");
