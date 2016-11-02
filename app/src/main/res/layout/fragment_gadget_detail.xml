@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ch.hsr.mge.gadgeothek.GadgetDetailFragment"
@@ -60,6 +61,14 @@
         android:layout_below="@+id/gadget_name"
         android:layout_alignParentStart="true"
         android:layout_marginTop="26dp" />
+
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/gadget_manufacturer"
+            android:layout_marginTop="8dp"
+            android:id="@+id/gadget_manufacturer_logo"
+            app:srcCompat="@mipmap/ic_unkown"/>
 
     <TextView android:layout_width="wrap_content"
         android:layout_height="wrap_content"

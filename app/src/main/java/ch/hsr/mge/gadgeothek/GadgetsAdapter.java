@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -12,25 +13,32 @@ import java.util.List;
 import ch.hsr.mge.gadgeothek.domain.Gadget;
 import ch.hsr.mge.gadgeothek.domain.Loan;
 import ch.hsr.mge.gadgeothek.domain.Reservation;
+import ch.hsr.mge.gadgeothek.service.IDecoratorService;
+import ch.hsr.mge.gadgeothek.service.LocalDecoratorService;
 
 public class GadgetsAdapter extends RecyclerView.Adapter<GadgetsAdapter.MyViewHolder> {
     private List<Gadget> gadgetList;
     private List<Loan> loansList;
     private List<Reservation> reservationList;
 
+    private IDecoratorService decorator;
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name, manufacturer;
+        public ImageView manufacturerLogo;
 
         public MyViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.gadget_list_name);
             manufacturer = (TextView) view.findViewById(R.id.gadget_list_manufacturer);
+            manufacturerLogo = (ImageView) view.findViewById(R.id.gadget_list_manufacturer_logo);
         }
     }
 
 
     public GadgetsAdapter() {
+        this.decorator = LocalDecoratorService.getDecoratorService();
         this.gadgetList = new ArrayList<>();
         this.loansList = new ArrayList<>();
         this.reservationList = new ArrayList<>();
@@ -95,6 +103,8 @@ public class GadgetsAdapter extends RecyclerView.Adapter<GadgetsAdapter.MyViewHo
         Gadget gadget = gadgetList.get(position);
         holder.name.setText(gadget.getName());
         holder.manufacturer.setText(gadget.getManufacturer());
+        int imageID = decorator.getDrawableIdForManufacturerName(gadget.getManufacturer());
+        holder.manufacturerLogo.setImageResource(imageID);
     }
 
     @Override

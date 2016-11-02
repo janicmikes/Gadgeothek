@@ -8,11 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import ch.hsr.mge.gadgeothek.domain.Gadget;
 import ch.hsr.mge.gadgeothek.domain.Loan;
 import ch.hsr.mge.gadgeothek.domain.Reservation;
+import ch.hsr.mge.gadgeothek.service.IDecoratorService;
+import ch.hsr.mge.gadgeothek.service.LocalDecoratorService;
 
 
 /**
@@ -24,6 +27,7 @@ import ch.hsr.mge.gadgeothek.domain.Reservation;
 public class GadgetDetailFragment extends Fragment implements View.OnClickListener {
 
     private IHandleGadgetDetailFragment mListener;
+    private IDecoratorService decorator;
 
     public enum DetailType {
         GADGET, RESERVATION, LOAN
@@ -34,6 +38,7 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
     TextView mManufacturerView;
     TextView mPrice;
     TextView mConditionView;
+    ImageView mManufacturerLogoView;
 
     TextView mLoanSince;
 
@@ -48,6 +53,7 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        decorator = LocalDecoratorService.getDecoratorService();
         return inflater.inflate(R.layout.fragment_gadget_detail, container, false);
 
     }
@@ -65,6 +71,8 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
 
         mAddReservation = (Button) getView().findViewById(R.id.btn_add_reservation);
         mDeleteReservation = (Button) getView().findViewById(R.id.btn_delete_reservation);
+
+        mManufacturerLogoView = (ImageView) getView().findViewById(R.id.gadget_manufacturer_logo);
 
         mAddReservation.setOnClickListener(this);
         mDeleteReservation.setOnClickListener(this);
@@ -107,6 +115,7 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
         mManufacturerView.setText(gadget.getManufacturer());
         mPrice.setText(Double.toString(gadget.getPrice()));
         mConditionView.setText(gadget.getCondition().toString());
+        mManufacturerLogoView.setImageResource(decorator.getDrawableIdForManufacturerName(gadget.getManufacturer()));
 
     }
 
