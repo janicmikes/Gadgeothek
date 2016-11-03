@@ -20,6 +20,9 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
     LoginFragment loginFragment;
     RegisterFragment registerFragment;
 
+    String mEmail = "";
+    String mPassword = "";
+
 
     private Stack<Fragment> history = new Stack<>();
     @Override
@@ -93,11 +96,24 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
             LibraryService.setServerAddress(loginFragment.mServerView.getText().toString());
             history.push(registerFragment);
 
+            mEmail = loginFragment.mEmailView.getText().toString();
+            mPassword = loginFragment.mPasswordView.getText().toString();
+
             setTitle(R.string.title_activity_register);
             getFragmentManager().beginTransaction().replace(R.id.login_fragment_container, registerFragment).commit();
         } else {
             loginFragment.mServerView.setError("This field is Required");
         }
+    }
+
+    @Override
+    public String getEmail() {
+        return mEmail;
+    }
+
+    @Override
+    public String getPassword() {
+        return mPassword;
     }
 
     @Override
@@ -132,6 +148,9 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
     @Override
     public void onCancelRegistration() {
         history.push(loginFragment);
+
+        mEmail = registerFragment.mEmailView.getText().toString();
+        mPassword = registerFragment.mPasswordView.getText().toString();
 
         setTitle(R.string.title_activity_login);
         getFragmentManager().beginTransaction().replace(R.id.login_fragment_container, loginFragment).commit();
