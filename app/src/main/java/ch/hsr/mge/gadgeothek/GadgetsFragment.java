@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class GadgetsFragment extends Fragment {
     private IHandleGadgetsFragment mListener;
 
     private RecyclerView recyclerView;
+    private TextView mEmptyList;
     private GadgetsAdapter mAdapter;
 
     public GadgetsFragment() {
@@ -45,6 +47,7 @@ public class GadgetsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = (RecyclerView) view.findViewById(R.id.gadgets_recycler_view);
+        mEmptyList = (TextView) view.findViewById(R.id.empty_view);
 
         mAdapter = new GadgetsAdapter();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
@@ -69,7 +72,14 @@ public class GadgetsFragment extends Fragment {
         LibraryService.getGadgets(new Callback<List<Gadget>>() {
             @Override
             public void onCompletion(List<Gadget> input) {
-                mAdapter.setGadgetList(input);
+                if (!input.isEmpty()){
+                    mAdapter.setGadgetList(input);
+                    mEmptyList.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    mEmptyList.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                }
             }
 
             @Override

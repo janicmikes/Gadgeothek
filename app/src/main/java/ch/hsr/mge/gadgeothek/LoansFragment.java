@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class LoansFragment extends Fragment {
     private IHandleLoansFragment mListener;
 
     private RecyclerView recyclerView;
+    private TextView mEmptyList;
     private GadgetsAdapter mAdapter;
 
 
@@ -48,6 +50,7 @@ public class LoansFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = (RecyclerView) view.findViewById(R.id.loans_recycler_view);
+        mEmptyList = (TextView) view.findViewById(R.id.empty_view);
 
         mAdapter = new GadgetsAdapter();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
@@ -72,7 +75,14 @@ public class LoansFragment extends Fragment {
         LibraryService.getLoansForCustomer(new Callback<List<Loan>>() {
             @Override
             public void onCompletion(List<Loan> input) {
-                mAdapter.setLoanList(input);
+                if (!input.isEmpty()) {
+                    mAdapter.setLoanList(input);
+                    mEmptyList.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    mEmptyList.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                }
             }
 
             @Override

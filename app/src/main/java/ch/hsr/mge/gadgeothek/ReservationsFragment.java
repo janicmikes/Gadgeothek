@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class ReservationsFragment extends Fragment {
     private IHandleReservationsFragment mListener;
 
     private RecyclerView recyclerView;
+    private TextView mEmptyList;
     private GadgetsAdapter mAdapter;
 
     public ReservationsFragment() {
@@ -49,6 +51,7 @@ public class ReservationsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = (RecyclerView) view.findViewById(R.id.reservations_recycler_view);
+        mEmptyList = (TextView) view.findViewById(R.id.empty_view);
 
         mAdapter = new GadgetsAdapter();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
@@ -73,8 +76,14 @@ public class ReservationsFragment extends Fragment {
         LibraryService.getReservationsForCustomer(new Callback<List<Reservation>>() {
             @Override
             public void onCompletion(List<Reservation> input) {
-                Log.d("Gadgeothek", "Received Loans from Server: Size: " + input.size());
-                mAdapter.setReservationList(input);
+                if (!input.isEmpty()){
+                    mAdapter.setReservationList(input);
+                    mEmptyList.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    mEmptyList.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                }
             }
 
             @Override
