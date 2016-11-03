@@ -1,9 +1,9 @@
 package ch.hsr.mge.gadgeothek;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +41,7 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
     ImageView mManufacturerLogoView;
 
     TextView mLoanSince;
+    TextView mLoanSinceLabel;
 
     Button mAddReservation;
     Button mDeleteReservation;
@@ -68,6 +69,7 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
         mConditionView = (TextView) getView().findViewById(R.id.gadget_condition);
 
         mLoanSince = (TextView) getView().findViewById(R.id.loan_since);
+        mLoanSinceLabel = (TextView) getView().findViewById(R.id.labelLoanSince);
 
         mAddReservation = (Button) getView().findViewById(R.id.btn_add_reservation);
         mDeleteReservation = (Button) getView().findViewById(R.id.btn_delete_reservation);
@@ -84,6 +86,7 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
                 gadget = mListener.getDetailGadget();
 
                 mLoanSince.setVisibility(View.GONE);
+                mLoanSinceLabel.setVisibility(View.GONE);
 
                 mAddReservation.setVisibility(View.VISIBLE);
                 mDeleteReservation.setVisibility(View.GONE);
@@ -92,6 +95,7 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
                 gadget = mListener.getDetailReservation().getGadget();
 
                 mLoanSince.setVisibility(View.GONE);
+                mLoanSinceLabel.setVisibility(View.GONE);
 
                 mAddReservation.setVisibility(View.GONE);
                 mDeleteReservation.setVisibility(View.VISIBLE);
@@ -101,14 +105,12 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
 
                 mLoanSince.setText(mListener.getDetailLoan().getPickupDate().toString());
                 mLoanSince.setVisibility(View.VISIBLE);
+                mLoanSinceLabel.setVisibility(View.VISIBLE);
 
                 mAddReservation.setVisibility(View.GONE);
                 mDeleteReservation.setVisibility(View.GONE);
                 break;
         }
-
-
-//        mListener.setTitle(gadget.getName());
 
         mInventoryNumber.setText(gadget.getInventoryNumber());
         mNameView.setText(gadget.getName());
@@ -177,7 +179,6 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
         Reservation getDetailReservation();
         Loan getDetailLoan();
         DetailType getDetailType();
-//        void setTitle(String title);
         void onReserveGadget();
         void onDeleteReservation();
     }

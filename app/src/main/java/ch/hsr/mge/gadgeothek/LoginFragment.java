@@ -1,12 +1,8 @@
 package ch.hsr.mge.gadgeothek;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -28,14 +24,17 @@ public class LoginFragment extends Fragment implements OnClickListener {
         void onStartRegistration();
         String getEmail();
         String getPassword();
+        String getServer();
+        void setEmail(String email);
+        void setPassword(String password);
+        void setServer(String server);
+
     }
 
     // UI references.
     EditText mServerView;
     EditText mEmailView;
     EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
 
     private IHandleLoginFragment context;
 
@@ -68,6 +67,17 @@ public class LoginFragment extends Fragment implements OnClickListener {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        String email = context.getEmail();
+        String password = context.getPassword();
+        String server = context.getServer();
+        mEmailView.setText(email);
+        mPasswordView.setText(password);
+        mServerView.setText(server);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
 
@@ -75,8 +85,8 @@ public class LoginFragment extends Fragment implements OnClickListener {
 
         // Set up the login form.
         mServerView = (EditText) getView().findViewById(R.id.server);
-        mEmailView = (EditText) getView().findViewById(R.id.email);
-        mPasswordView = (EditText) getView().findViewById(R.id.password);
+        mEmailView = (EditText) getView().findViewById(R.id.login_email);
+        mPasswordView = (EditText) getView().findViewById(R.id.login_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -88,13 +98,7 @@ public class LoginFragment extends Fragment implements OnClickListener {
             }
         });
 
-        mLoginFormView = getView().findViewById(R.id.login_form);
-        mProgressView = getView().findViewById(R.id.login_progress);
-
-
-        // Set default Server
-        mServerView.setText("http://mge1.dev.ifs.hsr.ch/public");
-
+        mServerView.setText(context.getServer());
         mEmailView.setText(context.getEmail());
         mPasswordView.setText(context.getPassword());
     }
@@ -142,7 +146,10 @@ public class LoginFragment extends Fragment implements OnClickListener {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+
+            context.setEmail(mEmailView.getText().toString());
+            context.setPassword(mPasswordView.getText().toString());
+            context.setServer(mServerView.getText().toString());
 
             context.onAttemptLogin(mEmailView.getText().toString(), mPasswordView.getText().toString());
 
@@ -153,42 +160,6 @@ public class LoginFragment extends Fragment implements OnClickListener {
         return email.contains("@hsr.ch");
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -197,11 +168,15 @@ public class LoginFragment extends Fragment implements OnClickListener {
                 break;
             }
             case R.id.btn_start_registration: {
+                context.setEmail(mEmailView.getText().toString());
+                context.setPassword(mPasswordView.getText().toString());
+                context.setServer(mServerView.getText().toString());
                 context.onStartRegistration();
                 break;
             }
 
         }
     }
+
 }
 

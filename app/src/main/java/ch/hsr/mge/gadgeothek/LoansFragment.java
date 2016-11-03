@@ -1,9 +1,9 @@
 package ch.hsr.mge.gadgeothek;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import ch.hsr.mge.gadgeothek.domain.Gadget;
 import ch.hsr.mge.gadgeothek.domain.Loan;
 import ch.hsr.mge.gadgeothek.service.Callback;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
@@ -95,20 +94,16 @@ public class LoansFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof IHandleLoansFragment) {
-            mListener = (IHandleLoansFragment) context;
-            loadLoans();
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement IHandleLoansFragment");
-        }
+        _onAttach_API_independent(context);
     }
-
     /**
      * Code duplication to enable API Level 22 support
      */
-    public void onAttach(Activity context) {
-        super.onAttach(context);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        _onAttach_API_independent(activity);
+    }
+    private void _onAttach_API_independent(Context context){
         if (context instanceof IHandleLoansFragment) {
             mListener = (LoansFragment.IHandleLoansFragment) context;
             loadLoans();
