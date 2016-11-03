@@ -187,7 +187,7 @@ public class RegisterFragment extends Fragment {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            activity.onAttemptRegistration(mEmailView.getText().toString(), mPasswordView.getText().toString(), mNameView.getText().toString(), mStudentnumberView.getText().toString());
+            activity.onAttemptRegistration(email, password, name, studentnumber);
 
         }
     }

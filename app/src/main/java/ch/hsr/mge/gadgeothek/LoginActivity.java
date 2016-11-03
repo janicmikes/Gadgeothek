@@ -133,7 +133,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
 
                     @Override
                     public void onError(String message) {
-                        //TODO: display message in snackbar
                         snackIt("Server-Fehler:" + message);
                     }
                 }
