@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
         setTitle(getString(R.string.title_activity_login));
 
         // add the starting fragment
-        getFragmentManager().beginTransaction().add(R.id.login_fragment_container, loginFragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.login_fragment_container, loginFragment).commit();
     }
 
     @Override
@@ -57,20 +57,11 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
 
                     @Override
                     public void onCompletion(Boolean input) {
-                        loginFragment.showProgress(false);
                         if (input) {
                             history.clear();
                             //
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra(MainActivity.ARG_LOGIN_EMAIL, email);
-                            /** Problem: Runtime Exeption was thrown here:
-                                android.util.AndroidRuntimeException: Calling startActivity()
-                             * from outside of an Activity  context requires the FLAG_ACTIVITY_NEW_TASK flag.
-                             * Is this really what you want?
-                             * FIX: from http://stackoverflow.com/questions/3918517/calling-startactivity-from-outside-of-an-activity-context
-                             * Set FLAG_ACTIVITY_NEW_TASK on intent
-                             * @TODO: Ask Stocker what the Problem is
-                             */
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             getApplicationContext().startActivity(intent);
                         } else {
@@ -81,7 +72,14 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
 
                     @Override
                     public void onError(String message) {
-                        snackIt("Error:" + message);
+                        if (message.equals("incorrect password")){
+                            loginFragment.mPasswordView.setError("Invalid Password");
+                            loginFragment.mPasswordView.requestFocus();
+                        } else if (message.equals("user does not exist")){
+                            loginFragment.mEmailView.setError("This user is not registered");
+                            loginFragment.mEmailView.requestFocus();
+                        }
+                        snackIt("Error: " + message);
                     }
                 }
 
@@ -124,13 +122,12 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
 
                     @Override
                     public void onCompletion(Boolean input) {
-                        registerFragment.showProgress(false);
                         if (input) {
                             snackIt("Registration successful");
                             onCancelRegistration();
                         } else {
                             registerFragment.mEmailView.setError(getString(R.string.error_invalid_email));
-                            snackIt("Registation failed");
+                            snackIt("Registration failed");
                         }
                     }
 
@@ -138,7 +135,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
                     public void onError(String message) {
                         //TODO: display message in snackbar
                         snackIt("Server-Fehler:" + message);
-                        Log.e("Gadgeothek", "Server-Fehler:" + message);
                     }
                 }
 
