@@ -1,12 +1,8 @@
 package ch.hsr.mge.gadgeothek;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -28,6 +24,11 @@ public class LoginFragment extends Fragment implements OnClickListener {
         void onStartRegistration();
         String getEmail();
         String getPassword();
+        String getServer();
+        void setEmail(String email);
+        void setPassword(String password);
+        void setServer(String server);
+
     }
 
     // UI references.
@@ -70,8 +71,10 @@ public class LoginFragment extends Fragment implements OnClickListener {
         super.onResume();
         String email = context.getEmail();
         String password = context.getPassword();
+        String server = context.getServer();
         mEmailView.setText(email);
         mPasswordView.setText(password);
+        mServerView.setText(server);
     }
 
     @Override
@@ -95,11 +98,7 @@ public class LoginFragment extends Fragment implements OnClickListener {
             }
         });
 
-
-
-        // Set default Server
-        mServerView.setText("http://mge1.dev.ifs.hsr.ch/public");
-
+        mServerView.setText(context.getServer());
         mEmailView.setText(context.getEmail());
         mPasswordView.setText(context.getPassword());
     }
@@ -148,6 +147,10 @@ public class LoginFragment extends Fragment implements OnClickListener {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
 
+            context.setEmail(mEmailView.getText().toString());
+            context.setPassword(mPasswordView.getText().toString());
+            context.setServer(mServerView.getText().toString());
+
             context.onAttemptLogin(mEmailView.getText().toString(), mPasswordView.getText().toString());
 
         }
@@ -165,11 +168,15 @@ public class LoginFragment extends Fragment implements OnClickListener {
                 break;
             }
             case R.id.btn_start_registration: {
+                context.setEmail(mEmailView.getText().toString());
+                context.setPassword(mPasswordView.getText().toString());
+                context.setServer(mServerView.getText().toString());
                 context.onStartRegistration();
                 break;
             }
 
         }
     }
+
 }
 

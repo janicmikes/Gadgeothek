@@ -2,11 +2,9 @@ package ch.hsr.mge.gadgeothek;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 
@@ -15,14 +13,13 @@ import java.util.Stack;
 import ch.hsr.mge.gadgeothek.service.Callback;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 
-import static android.R.id.content;
-
 public class LoginActivity extends AppCompatActivity implements LoginFragment.IHandleLoginFragment, RegisterFragment.IHandleRegisterFragment {
     LoginFragment loginFragment;
     RegisterFragment registerFragment;
 
     String mEmail = "";
     String mPassword = "";
+    String mServer = "http://mge1.dev.ifs.hsr.ch/public";
 
 
     private Stack<Pair<Fragment, String>> history = new Stack<>();
@@ -65,7 +62,9 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
                     public void onCompletion(Boolean input) {
                         if (input) {
                             history.clear();
-                            //
+
+                            setPassword("");
+
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra(MainActivity.ARG_LOGIN_EMAIL, email);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -117,6 +116,26 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
     @Override
     public String getPassword() {
         return mPassword;
+    }
+
+    @Override
+    public String getServer() {
+        return mServer;
+    }
+
+    @Override
+    public void setEmail(String email) {
+        mEmail = email;
+    }
+
+    @Override
+    public void setPassword(String password) {
+        mPassword = password;
+    }
+
+    @Override
+    public void setServer(String server) {
+        mServer = server;
     }
 
     @Override

@@ -50,6 +50,8 @@ public class RegisterFragment extends Fragment {
         void onCancelRegistration();
         String getEmail();
         String getPassword();
+        void setEmail(String email);
+        void setPassword(String password);
     }
 
     // UI references.
@@ -91,8 +93,10 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mEmailView.setText(activity.getEmail());
-        mPasswordView.setText(activity.getPassword());
+        String email = activity.getEmail();
+        String password = activity.getPassword();
+        mEmailView.setText(email);
+        mPasswordView.setText(password);
     }
 
     @Override
@@ -208,6 +212,8 @@ public class RegisterFragment extends Fragment {
     }
 
     private void cancelRegistration(){
+        activity.setEmail(mEmailView.getText().toString());
+        activity.setPassword(mPasswordView.getText().toString());
         activity.onCancelRegistration();
     }
 
