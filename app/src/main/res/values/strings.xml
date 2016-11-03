@@ -31,4 +31,5 @@
     <string name="prompt_server">Server</string>
     <string name="action_delete_reservation">Delete Reservation</string>
     <string name="action_add_reservation">Reserve Gadget</string>
+    <string name="no_data_available">no entry found</string>
 </resources>
