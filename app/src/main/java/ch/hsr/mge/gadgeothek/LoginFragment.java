@@ -66,6 +66,15 @@ public class LoginFragment extends Fragment implements OnClickListener {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        String email = context.getEmail();
+        String password = context.getPassword();
+        mEmailView.setText(email);
+        mPasswordView.setText(password);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
 
@@ -73,8 +82,8 @@ public class LoginFragment extends Fragment implements OnClickListener {
 
         // Set up the login form.
         mServerView = (EditText) getView().findViewById(R.id.server);
-        mEmailView = (EditText) getView().findViewById(R.id.email);
-        mPasswordView = (EditText) getView().findViewById(R.id.password);
+        mEmailView = (EditText) getView().findViewById(R.id.login_email);
+        mPasswordView = (EditText) getView().findViewById(R.id.login_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {

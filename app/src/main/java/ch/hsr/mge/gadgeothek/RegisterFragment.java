@@ -89,11 +89,18 @@ public class RegisterFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mEmailView.setText(activity.getEmail());
+        mPasswordView.setText(activity.getPassword());
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Set up the login form.
-        mEmailView = (EditText) getView().findViewById(R.id.email);
-        mPasswordView = (EditText) getView().findViewById(R.id.password);
+        mEmailView = (EditText) getView().findViewById(R.id.register_email);
+        mPasswordView = (EditText) getView().findViewById(R.id.register_password);
         mNameView = (EditText) getView().findViewById(R.id.name);
         mStudentnumberView = (EditText) getView().findViewById(R.id.studentnumber);
 

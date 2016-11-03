@@ -101,9 +101,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
 
             history.push(new Pair<Fragment, String>(registerFragment, getString(R.string.title_activity_register)));
 
-            mEmail = loginFragment.mEmailView.getText().toString();
-            mPassword = loginFragment.mPasswordView.getText().toString();
-
             setTitle(R.string.title_activity_register);
             getFragmentManager().beginTransaction().replace(R.id.login_fragment_container, registerFragment).commit();
 
@@ -151,9 +148,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
     @Override
     public void onCancelRegistration() {
         history.push(new Pair<Fragment, String>(loginFragment, getString(R.string.title_activity_login)));
-
-        mEmail = registerFragment.mEmailView.getText().toString();
-        mPassword = registerFragment.mPasswordView.getText().toString();
 
         setTitle(R.string.title_activity_login);
         getFragmentManager().beginTransaction().replace(R.id.login_fragment_container, loginFragment).commit();
