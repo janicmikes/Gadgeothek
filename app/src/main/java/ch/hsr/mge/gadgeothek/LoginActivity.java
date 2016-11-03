@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 
 import java.util.Stack;
 
@@ -24,7 +25,8 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
     String mPassword = "";
 
 
-    private Stack<Fragment> history = new Stack<>();
+    private Stack<Pair<Fragment, String>> history = new Stack<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,15 +39,19 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
 
         // add the starting fragment
         getFragmentManager().beginTransaction().replace(R.id.login_fragment_container, loginFragment).commit();
+        history.push(new Pair<Fragment, String>(loginFragment, getString(R.string.title_activity_login)));
     }
 
     @Override
     public void onBackPressed() {
         if (history.size() > 1) {
             history.pop();
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, history.peek()).commit();
-        } else {
-            // initial fragment reached
+        }
+        if (history.size()>0 ) {
+            getFragmentManager().beginTransaction().replace(R.id.login_fragment_container, history.peek().first).commit();
+            setTitle(history.peek().second);
+        }else{
+            Log.e("Gadgeothek", "Warning: LoginActivity History was empty in Login Activity. Shouldn't happen. Ignored Gracefully.");
         }
     }
 
@@ -92,13 +98,15 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
     public void onStartRegistration() {
         if(loginFragment.mServerView.getText().toString().contains("http://")){
             LibraryService.setServerAddress(loginFragment.mServerView.getText().toString());
-            history.push(registerFragment);
+
+            history.push(new Pair<Fragment, String>(registerFragment, getString(R.string.title_activity_register)));
 
             mEmail = loginFragment.mEmailView.getText().toString();
             mPassword = loginFragment.mPasswordView.getText().toString();
 
             setTitle(R.string.title_activity_register);
             getFragmentManager().beginTransaction().replace(R.id.login_fragment_container, registerFragment).commit();
+
         } else {
             loginFragment.mServerView.setError("This field is Required");
         }
@@ -142,7 +150,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.IH
 
     @Override
     public void onCancelRegistration() {
-        history.push(loginFragment);
+        history.push(new Pair<Fragment, String>(loginFragment, getString(R.string.title_activity_login)));
 
         mEmail = registerFragment.mEmailView.getText().toString();
         mPassword = registerFragment.mPasswordView.getText().toString();
