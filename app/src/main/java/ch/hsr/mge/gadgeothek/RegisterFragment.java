@@ -116,6 +116,14 @@ public class RegisterFragment extends Fragment {
             }
         });
 
+        Button mCancelButton = (Button) getView().findViewById(R.id.btn_cancel_register);
+        mCancelButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cancelRegistration();
+            }
+        });
+
         mEmailView.setText(activity.getEmail());
         mPasswordView.setText(activity.getPassword());
 
@@ -190,6 +198,10 @@ public class RegisterFragment extends Fragment {
             activity.onAttemptRegistration(email, password, name, studentnumber);
 
         }
+    }
+
+    private void cancelRegistration(){
+        activity.onCancelRegistration();
     }
 
     private boolean isEmailValid(String email) {
