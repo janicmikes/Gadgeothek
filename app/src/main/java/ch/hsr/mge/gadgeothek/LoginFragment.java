@@ -23,12 +23,11 @@ import android.widget.TextView;
  */
 public class LoginFragment extends Fragment implements OnClickListener {
 
-    EditText server;
-
-
     public interface IHandleLoginFragment {
         void onAttemptLogin(String email, String password);
         void onStartRegistration();
+        String getEmail();
+        String getPassword();
     }
 
     // UI references.
@@ -93,12 +92,11 @@ public class LoginFragment extends Fragment implements OnClickListener {
         mProgressView = getView().findViewById(R.id.login_progress);
 
 
-        // TODO: restore server URL from local datastore
+        // Set default Server
         mServerView.setText("http://mge1.dev.ifs.hsr.ch/public");
 
-        // Init for DEV REMOVE on RELEASE
-        mEmailView.setText("m@hsr.ch");
-        mPasswordView.setText("12345");
+        mEmailView.setText(context.getEmail());
+        mPasswordView.setText(context.getPassword());
     }
 
 

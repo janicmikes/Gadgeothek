@@ -48,6 +48,8 @@ public class RegisterFragment extends Fragment {
     public interface IHandleRegisterFragment {
         void onAttemptRegistration(String email, String password, String name, String studentnumber);
         void onCancelRegistration();
+        String getEmail();
+        String getPassword();
     }
 
     // UI references.
@@ -118,6 +120,9 @@ public class RegisterFragment extends Fragment {
 
         mRegisterFormView = getView().findViewById(R.id.register_form);
         mProgressView = getView().findViewById(R.id.register_progress);
+
+        mEmailView.setText(activity.getEmail());
+        mPasswordView.setText(activity.getPassword());
 
     }
 
