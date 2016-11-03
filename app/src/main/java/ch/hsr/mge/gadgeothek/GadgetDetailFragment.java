@@ -112,9 +112,6 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
                 break;
         }
 
-
-//        mListener.setTitle(gadget.getName());
-
         mInventoryNumber.setText(gadget.getInventoryNumber());
         mNameView.setText(gadget.getName());
         mManufacturerView.setText(gadget.getManufacturer());
@@ -182,7 +179,6 @@ public class GadgetDetailFragment extends Fragment implements View.OnClickListen
         Reservation getDetailReservation();
         Loan getDetailLoan();
         DetailType getDetailType();
-//        void setTitle(String title);
         void onReserveGadget();
         void onDeleteReservation();
     }
