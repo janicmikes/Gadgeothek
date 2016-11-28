@@ -1,5 +1,5 @@
 # Gadgeothek [![travis][travis-image]][travis-url] [![slack][slack-image]][slack-url]
-Das Miniprojekt im Modul MGE (Mobile & GUI Engineering) an der Hochschule für Technick Rapperswil (HSR).
+Das Miniprojekt im Modul MGE (Mobile & GUI Engineering) an der Hochschule für Technik Rapperswil (HSR).
 
 Fragen können via Slack gestellt werden.
 
